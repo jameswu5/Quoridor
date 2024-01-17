@@ -16,6 +16,7 @@ public class Game
 
         currentScreen = GameScreen.Main;
         mainScreen = new MainScreen();
+        mainScreen.clickAction += ExecuteAction;
     }
 
     public void Run()
@@ -41,5 +42,10 @@ public class Game
             default:
                 throw new Exception("No screen found.");
         }
+    }
+
+    public void ExecuteAction(Action action)
+    {
+
     }
 }
