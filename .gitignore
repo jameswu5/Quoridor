@@ -1,0 +1,4 @@
+# Csharp-related files
+obj/
+bin/
+*.sln
