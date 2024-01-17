@@ -5,10 +5,17 @@ namespace Quoridor;
 
 public class Game 
 {
+    public enum GameScreen {Main};
+    private GameScreen currentScreen;
+    private MainScreen mainScreen;
+
     public Game()
     {
         Raylib.InitWindow(Settings.ScreenWidth, Settings.ScreenHeight, "Game");
         Raylib.SetTargetFPS(60);
+
+        currentScreen = GameScreen.Main;
+        mainScreen = new MainScreen();
     }
 
     public void Run()
@@ -26,6 +33,13 @@ public class Game
     // This is run every frame
     private void Update() 
     {
-
+        switch (currentScreen)
+        {
+            case GameScreen.Main:
+                mainScreen.Display();
+                break;
+            default:
+                throw new Exception("No screen found.");
+        }
     }
 }
