@@ -17,17 +17,18 @@ public static class Settings
         public const int BoardSize = 9;
         public const int NumOfPlayers = 4;
 
-        public static readonly Color BorderColour = Color.BLACK;
-        public static readonly Color BoardColour = Color.LIGHTGRAY;
-        public static readonly Color WallColour = Color.DARKGRAY;
+        public static readonly Color BorderColour = Color.DARKGRAY;
+        public static readonly Color BoardColour = ScreenColour;
+        public static readonly Color WallColour = Color.LIGHTGRAY;
+        public static readonly Color[] PlayerColours = new Color[] {Color.RED, Color.BLUE, Color.ORANGE, Color.GREEN};
+
         public const int BorderWidth = 10;
         public const int SquareSize = 50;
+        public const int PlayerRadius = 20;
         public const int WallWidth = 10;
 
         public const int BoardSideLength = BoardSize * (SquareSize + WallWidth) - WallWidth;
         public const int BoardPaddingX = (ScreenWidth - BoardSideLength) >> 1;
         public const int BoardPaddingY = (ScreenHeight - BoardSideLength) >> 1;
     }
-
-
 }

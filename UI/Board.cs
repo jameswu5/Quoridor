@@ -28,5 +28,19 @@ public partial class Board
             DrawRectangle(BoardPaddingX + SquareSize + i * (SquareSize + WallWidth), BoardPaddingY, WallWidth, BoardSideLength, WallColour);
         }
 
+        // Players
+        for (int i = 0; i < NumOfPlayers; i++)
+        {
+            Coord coord = playerPositions[i];
+            Coord topLeft = GetTopLeftCoord(coord);
+            DrawCircle(topLeft.x + SquareSize / 2, topLeft.y + SquareSize / 2, PlayerRadius, PlayerColours[i]);
+        }
     }
+
+    private Coord GetTopLeftCoord(int x, int y)
+    {
+        return new Coord(BoardPaddingX + x * (SquareSize + WallWidth), BoardPaddingY + (BoardSize - 1 - y) * (SquareSize + WallWidth));
+    }
+
+    private Coord GetTopLeftCoord(Coord coord) => GetTopLeftCoord(coord.x, coord.y);
 }
