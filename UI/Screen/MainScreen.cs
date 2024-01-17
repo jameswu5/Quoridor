@@ -22,6 +22,7 @@ public class MainScreen : Screen
         foreach (Button button in squareButtons) {
             button.Render();
         }
+        board.DisplayState();
     }
 
     private void InitialiseButtons()
@@ -31,7 +32,7 @@ public class MainScreen : Screen
             for (int j = 0; j < BoardSize; j++)
             {
                 Coord topLeft = Board.GetTopLeftCoord(i, j);
-                HoverButton button = new HoverButton(topLeft.x, topLeft.y, SquareSize, SquareSize);
+                HoverButton button = new HoverButton(topLeft.x, topLeft.y, SquareSize, SquareSize, colour: BoardColour, hoverColour: SquareHoverColour);
                 AddButtonAction(button, new Action(coord: new Coord(i, j)));
                 squareButtons.Add(button);
             }

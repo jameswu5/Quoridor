@@ -6,10 +6,22 @@ namespace Quoridor;
 
 public class HoverButton : RectangularButton
 {
-    public HoverButton(int posX, int posY, int width, int height) : base(posX, posY, width, height) {}
+    private Color colour;
+    private Color hoverColour;
+
+    public HoverButton(int posX, int posY, int width, int height, Color? colour = null, Color? hoverColour = null) : base(posX, posY, width, height)
+    {
+        this.colour = colour ?? Settings.DefaultButtonColour;
+        this.hoverColour = hoverColour ?? Settings.DefaultButtonHoverColour;
+    }
+
+    protected override void Display()
+    {
+        DrawRectangle(posX, posY, width, height, colour);
+    }
 
     protected override void HoverDisplay()
     {
-        DrawRectangle(posX, posY, width, height, Settings.HoverTint);
+        DrawRectangle(posX, posY, width, height, hoverColour);
     }
 }

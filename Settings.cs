@@ -12,7 +12,8 @@ public static class Settings
     public static readonly Color DefaultDarkTextColour = Color.BLACK;
     public const int DefaultFontSize = 32;
 
-    public static readonly Color HoverTint = new Color(0, 0, 0, 100);
+    public static readonly Color DefaultButtonColour = Color.LIGHTGRAY;
+    public static readonly Color DefaultButtonHoverColour = Color.DARKGRAY;
 
     public static class Board
     {
@@ -21,7 +22,9 @@ public static class Settings
 
         public static readonly Color BorderColour = Color.DARKGRAY;
         public static readonly Color BoardColour = ScreenColour;
+        public static readonly Color SquareHoverColour = Color.LIGHTGRAY;
         public static readonly Color WallColour = Color.LIGHTGRAY;
+        public static readonly Color WallHoverColour = Color.DARKGRAY;
         public static readonly Color[] PlayerColours = new Color[] {Color.RED, Color.BLUE, Color.ORANGE, Color.GREEN};
 
         public const int BorderWidth = 10;

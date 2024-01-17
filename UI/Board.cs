@@ -7,6 +7,9 @@ namespace Quoridor;
 
 public partial class Board
 {
+    /// <summary>
+    /// Displays the empty board
+    /// </summary>
     public void Display()
     {
         // Border
@@ -27,7 +30,13 @@ public partial class Board
             DrawRectangle(BoardPaddingX, BoardPaddingY + SquareSize + i * (SquareSize + WallWidth), BoardSideLength, WallWidth, WallColour);
             DrawRectangle(BoardPaddingX + SquareSize + i * (SquareSize + WallWidth), BoardPaddingY, WallWidth, BoardSideLength, WallColour);
         }
+    }
 
+    /// <summary>
+    /// Displays the things placed on the board (i.e. placed players and placed walls)
+    /// </summary>
+    public void DisplayState()
+    {
         // Players
         for (int i = 0; i < NumOfPlayers; i++)
         {
