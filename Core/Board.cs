@@ -5,28 +5,28 @@ namespace Quoridor;
 
 public partial class Board
 {
-    private Coord[] playerPositions;
+    private List<Player> players;
     private List<Wall> walls;
 
     public Board()
     {
-        playerPositions = new Coord[NumOfPlayers];
+        players = new List<Player>();
         walls = new List<Wall>();
         NewGame();
     }
 
     private void NewGame()
     {
-        Array.Clear(playerPositions);
+        players.Clear();
         walls.Clear();
 
         int index = BoardSize >> 1;
-        playerPositions[0] = new Coord(index, 0);
-        playerPositions[1] = new Coord(index, BoardSize - 1);
+        players.Add(new Player(new Coord(index, 0), PlayerColours[0]));
+        players.Add(new Player(new Coord(index, BoardSize - 1), PlayerColours[1]));
         if (NumOfPlayers == 4)
         {
-            playerPositions[2] = new Coord(0, index);
-            playerPositions[3] = new Coord(BoardSize - 1, index);
+            players.Add(new Player(new Coord(0, index), PlayerColours[2]));
+            players.Add(new Player(new Coord(BoardSize - 1, index), PlayerColours[3]));
         }
     }
 }

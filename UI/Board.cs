@@ -40,9 +40,9 @@ public partial class Board
         // Players
         for (int i = 0; i < NumOfPlayers; i++)
         {
-            Coord coord = playerPositions[i];
+            Coord coord = players[i].position;
             Coord topLeft = GetTopLeftCoord(coord);
-            DrawCircle(topLeft.x + SquareSize / 2, topLeft.y + SquareSize / 2, PlayerRadius, PlayerColours[i]);
+            DrawCircle(topLeft.x + SquareSize / 2, topLeft.y + SquareSize / 2, PlayerRadius, players[i].colour);
         }
     }
 
