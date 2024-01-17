@@ -1,2 +1,13 @@
-﻿// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Hello, World!");
+﻿using System;
+using Raylib_cs;
+
+namespace Quoridor;
+
+public static class Program
+{
+    public static void Main()
+    {
+        Game game = new Game();
+        game.Run();
+    }
+}
