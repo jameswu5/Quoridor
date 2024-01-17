@@ -3,7 +3,7 @@ using Raylib_cs;
 
 namespace Quoridor;
 
-public class Game 
+public class Game
 {
     public enum GameScreen {Main};
     private GameScreen currentScreen;
