@@ -12,6 +12,8 @@ public static class Settings
     public static readonly Color DefaultDarkTextColour = Color.BLACK;
     public const int DefaultFontSize = 32;
 
+    public static readonly Color HoverTint = new Color(0, 0, 0, 100);
+
     public static class Board
     {
         public const int BoardSize = 9;

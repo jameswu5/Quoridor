@@ -46,6 +46,10 @@ public class Game
 
     public void ExecuteAction(Action action)
     {
-        Console.WriteLine("Button pressed");
+        if (action.coord != null)
+        {
+            Coord coord = (Coord)action.coord;
+            Console.WriteLine($"{coord.x} {coord.y}");
+        }
     }
 }

@@ -37,10 +37,10 @@ public partial class Board
         }
     }
 
-    private Coord GetTopLeftCoord(int x, int y)
+    public static Coord GetTopLeftCoord(int x, int y)
     {
         return new Coord(BoardPaddingX + x * (SquareSize + WallWidth), BoardPaddingY + (BoardSize - 1 - y) * (SquareSize + WallWidth));
     }
 
-    private Coord GetTopLeftCoord(Coord coord) => GetTopLeftCoord(coord.x, coord.y);
+    public static Coord GetTopLeftCoord(Coord coord) => GetTopLeftCoord(coord.x, coord.y);
 }
