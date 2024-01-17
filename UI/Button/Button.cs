@@ -3,7 +3,7 @@ using Raylib_cs;
 using static Raylib_cs.Raylib;
 using static Quoridor.Settings;
 
-namespace PlayerAlbum;
+namespace Quoridor;
 
 public abstract class Button
 {
@@ -48,7 +48,7 @@ public abstract class Button
             if (IsMouseButtonReleased(0))
             {
                 Click();
-            }   
+            }
         }
         else
         {

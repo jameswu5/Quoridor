@@ -46,6 +46,6 @@ public class Game
 
     public void ExecuteAction(Action action)
     {
-
+        Console.WriteLine("Button pressed");
     }
 }
