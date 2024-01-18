@@ -85,8 +85,20 @@ public partial class Board
     private static bool CheckInBounds(Coord coord) => coord.x >= 0 && coord.x < BoardSize && coord.y >= 0 && coord.y < BoardSize;
 
 
-    public void MakeMove(int playerIndex, Coord newSquare)
+    public void MakeMove(int playerIndex, Coord newSquare, Wall? wall)
     {
-        players[playerIndex].position = newSquare;
+        if (wall == null)
+        {
+            players[playerIndex].position = newSquare;
+        }
+        else
+        {
+            walls.Add(wall);
+        }
+    }
+
+    public void PlaceWall(Wall wall)
+    {
+
     }
 }
