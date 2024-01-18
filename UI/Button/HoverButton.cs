@@ -20,7 +20,6 @@ public class HoverButton : RectangularButton
 
     protected override void HoverDisplay()
     {
-        // DrawRectangle(posX, posY, width, height, hoverColour);
         Display();
         DrawRectangle(posX, posY, width, height, Settings.DefaultHoverTint);
     }
