@@ -9,14 +9,24 @@ public class Game
     private GameScreen currentScreen;
     private MainScreen mainScreen;
 
+    private Board board;
+    private int selectedPlayer;
+    private List<Coord> legalSquares;
+
     public Game()
     {
         Raylib.InitWindow(Settings.ScreenWidth, Settings.ScreenHeight, "Game");
         Raylib.SetTargetFPS(60);
 
+        board = new Board();
         currentScreen = GameScreen.Main;
-        mainScreen = new MainScreen();
+        mainScreen = new MainScreen(board);
         mainScreen.clickAction += ExecuteAction;
+
+        selectedPlayer = -1;
+        legalSquares = new List<Coord>();
+
+        NewGame();
     }
 
     public void Run()
@@ -49,7 +59,18 @@ public class Game
         if (action.coord != null)
         {
             Coord coord = (Coord)action.coord;
-            Console.WriteLine($"{coord.x} {coord.y}");
+            selectedPlayer = board.CheckSquareOccupied(coord);
+            if (selectedPlayer != -1)
+            {
+                legalSquares = board.GetLegalSquares(selectedPlayer);
+            }
         }
+    }
+
+    public void NewGame()
+    {
+        board.NewGame();
+        selectedPlayer = -1;
+        legalSquares.Clear();
     }
 }

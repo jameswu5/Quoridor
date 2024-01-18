@@ -9,9 +9,9 @@ public class MainScreen : Screen
     private Board board;
     private List<Button> squareButtons;
 
-    public MainScreen()
+    public MainScreen(Board board)
     {
-        board = new Board();
+        this.board = board;
         squareButtons = new List<Button>();
         InitialiseButtons();
     }
