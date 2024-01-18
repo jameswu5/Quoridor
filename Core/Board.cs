@@ -116,15 +116,16 @@ public partial class Board
         walls.Add(wall);
         int i = wall.x;
         int j = wall.y;
-        Console.WriteLine($"{i} {j}");
         if (wall.isHorizontal)
         {
+            validWallsVer[i, j] = false;
             validWallsHor[i, j] = false;
             validWallsHor[Math.Min(i + 1, BoardSize - 2), j] = false;
             validWallsHor[Math.Max(0, i-1), j] = false;
         }
         else
         {
+            validWallsHor[i, j] = false;
             validWallsVer[i, j] = false;
             validWallsVer[i, Math.Min(j + 1, BoardSize - 2)] = false;
             validWallsVer[i, Math.Max(0, j - 1)] = false;
