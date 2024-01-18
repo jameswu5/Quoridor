@@ -71,7 +71,21 @@ public class Game
             }
             else
             {
-                OnMove(coord, action.wall);
+                Wall wall = (Wall)action.wall;
+                if (wall.isHorizontal)
+                {
+                    if (board.validWallsHor[wall.x, wall.y])
+                    {
+                        OnMove(coord, action.wall);
+                    }
+                }
+                else
+                {
+                    if (board.validWallsVer[wall.x, wall.y])
+                    {
+                        OnMove(coord, action.wall);
+                    }
+                }
             }
         }
     }

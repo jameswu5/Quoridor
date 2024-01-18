@@ -10,10 +10,15 @@ public partial class Board
     public List<Player> players;
     public List<Wall> walls;
 
+    public bool[,] validWallsHor;
+    public bool[,] validWallsVer;
+
     public Board()
     {
         players = new List<Player>();
         walls = new List<Wall>();
+        validWallsHor = new bool[BoardSize - 1, BoardSize - 1];
+        validWallsVer = new bool[BoardSize - 1, BoardSize - 1];
         InitialiseUI();
         NewGame();
     }
@@ -30,6 +35,15 @@ public partial class Board
         {
             players.Add(new Player(new Coord(0, index), PlayerColours[2]));
             players.Add(new Player(new Coord(BoardSize - 1, index), PlayerColours[3]));
+        }
+
+        for (int i = 0; i < BoardSize - 1; i++)
+        {
+            for (int j = 0; j < BoardSize - 1; j++)
+            {
+                validWallsHor[i, j] = true;
+                validWallsVer[i, j] = true;
+            }
         }
     }
 
@@ -93,12 +107,27 @@ public partial class Board
         }
         else
         {
-            walls.Add(wall);
+            PlaceWall(wall);
         }
     }
 
     public void PlaceWall(Wall wall)
     {
-
+        walls.Add(wall);
+        int i = wall.x;
+        int j = wall.y;
+        Console.WriteLine($"{i} {j}");
+        if (wall.isHorizontal)
+        {
+            validWallsHor[i, j] = false;
+            validWallsHor[Math.Min(i + 1, BoardSize - 2), j] = false;
+            validWallsHor[Math.Max(0, i-1), j] = false;
+        }
+        else
+        {
+            validWallsVer[i, j] = false;
+            validWallsVer[i, Math.Min(j + 1, BoardSize - 2)] = false;
+            validWallsVer[i, Math.Max(0, j - 1)] = false;
+        }
     }
 }
