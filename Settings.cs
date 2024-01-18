@@ -17,12 +17,13 @@ public static class Settings
 
     public static class Board
     {
-        public const int BoardSize = 9;
+        public const int BoardSize = 7;
         public const int NumOfPlayers = 4;
 
         public static readonly Color BorderColour = Color.DARKGRAY;
         public static readonly Color BoardColour = ScreenColour;
         public static readonly Color WallColour = Color.LIGHTGRAY;
+        public static readonly Color PlacedWallColour = Color.DARKGRAY;
         public static readonly Color[] PlayerColours = new Color[] {Color.RED, Color.BLUE, Color.ORANGE, Color.GREEN};
 
         public static readonly Color SquareTurnColour = new Color(170, 170, 170, 255);
