@@ -58,11 +58,33 @@ public class Game
     public void ExecuteAction(Action action)
     {
         if (action.coord != null)
-        {
+        {            
             Coord coord = (Coord)action.coord;
-            if (legalSquares.Contains(coord))
+
+            if (action.wall == null)
             {
-                OnMove(coord);
+                if (legalSquares.Contains(coord))
+                {
+                    OnMove(coord);
+                }
+            }
+            else
+            {
+                Wall wall = (Wall)action.wall;
+                if (wall.isHorizontal)
+                {
+                    if (board.validWallsHor[wall.x, wall.y])
+                    {
+                        OnMove(coord, action.wall);
+                    }
+                }
+                else
+                {
+                    if (board.validWallsVer[wall.x, wall.y])
+                    {
+                        OnMove(coord, action.wall);
+                    }
+                }
             }
         }
     }
@@ -79,24 +101,25 @@ public class Game
         board.SetSquareButtonSelected(board.players[turn].position, true);
     }
 
-    private void OnMove(Coord newSquare)
+    private void OnMove(Coord newSquare, Wall? wall = null)
     {
         // Unhighlight all the legal moves
-        foreach (Coord coord in legalSquares)
+        foreach (Coord pos in legalSquares)
         {
-            board.SetSquareButtonHighlight(coord, false);
+            board.SetSquareButtonHighlight(pos, false);
         }
 
         board.SetSquareButtonSelected(board.players[turn].position, false);
 
-        board.MakeMove(turn, newSquare);
+        board.MakeMove(turn, newSquare, wall);
+
         turn = (turn + 1) % Settings.Board.NumOfPlayers;
 
         legalSquares = board.GetLegalSquares(turn);
 
-        foreach (Coord coord in legalSquares)
+        foreach (Coord pos in legalSquares)
         {
-            board.SetSquareButtonHighlight(coord, true);
+            board.SetSquareButtonHighlight(pos, true);
         }
 
         board.SetSquareButtonSelected(board.players[turn].position, true);

@@ -29,7 +29,7 @@ public partial class Board
             {
                 Coord topLeft = GetTopLeftCoord(i, j);
                 BoardSquareButton button = new BoardSquareButton(topLeft.x, topLeft.y);
-                AddButtonAction(button, new Action(coord: new Coord(i, j)));
+                AddButtonAction(button, new Action(coord: new Coord(i, j), null));
                 squareButtons[i, j] = button;
             }
         }
@@ -41,11 +41,11 @@ public partial class Board
             {
                 Coord temp = GetTopLeftCoord(i + 1, j + 1);
                 WallButton vButton = new WallButton(temp.x - WallWidth, temp.y, false);
-                AddButtonAction(vButton, new Action(coord: new Coord(i, j)));
+                AddButtonAction(vButton, new Action(coord: new Coord(i, j), wall: new Wall(i, j, false)));
                 vWallButtons[i, j] = vButton;
 
                 WallButton hButton = new WallButton(temp.x - SquareSize - WallWidth, temp.y + SquareSize, true);
-                AddButtonAction(hButton, new Action(coord: new Coord(i, j)));
+                AddButtonAction(hButton, new Action(coord: new Coord(i, j), wall: new Wall(i, j, true)));
                 hWallButtons[i, j] = hButton;
             }
         }
@@ -120,6 +120,12 @@ public partial class Board
             Coord coord = players[i].position;
             Coord topLeft = GetTopLeftCoord(coord);
             DrawCircle(topLeft.x + SquareSize / 2, topLeft.y + SquareSize / 2, PlayerRadius, players[i].colour);
+        }
+
+        // Walls
+        foreach (Wall wall in walls)
+        {
+            wall.Display();
         }
     }
 

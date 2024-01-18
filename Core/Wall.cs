@@ -2,7 +2,7 @@ using System;
 
 namespace Quoridor;
 
-public class Wall
+public partial class Wall
 {
     public Coord coord;
     public bool isHorizontal;
@@ -17,6 +17,8 @@ public class Wall
         
         x = coord.x;
         y = coord.y;
+
+        InitialiseUI();
     }
 
     public Wall(int x, int y, bool isHorizontal)
@@ -26,5 +28,7 @@ public class Wall
         this.isHorizontal = isHorizontal;
         
         coord = new Coord(x, y);
+
+        InitialiseUI();
     }
 }
