@@ -14,6 +14,8 @@ public partial class Board
     public bool[,] validWallsVer;
     public int[,] validMoves; // Each square will be 0b____ : up, right, down, left
 
+    public bool gameOver;
+
     public static readonly int[] dirMask = new int[] {0b1000, 0b0100, 0b0010, 0b0001};
 
     public Board()
@@ -23,6 +25,7 @@ public partial class Board
         validWallsHor = new bool[BoardSize - 1, BoardSize - 1];
         validWallsVer = new bool[BoardSize - 1, BoardSize - 1];
         validMoves = new int[BoardSize, BoardSize];
+        gameOver = false;
         InitialiseUI();
         NewGame();
     }
@@ -57,13 +60,13 @@ public partial class Board
                 validMoves[i, j] = 0b1111;
             }
         }
+
+        gameOver = false;
     }
 
     public void GameOver()
     {
-        validWallsHor = new bool[BoardSize - 1, BoardSize - 1];
-        validWallsVer = new bool[BoardSize - 1, BoardSize - 1];
-        validMoves = new int[BoardSize, BoardSize];
+        gameOver = true;
     }
 
     /// <summary>
