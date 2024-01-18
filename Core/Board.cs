@@ -33,12 +33,12 @@ public partial class Board
         walls.Clear();
 
         int index = BoardSize >> 1;
-        players.Add(new Player(new Coord(index, 0), PlayerColours[0]));
-        players.Add(new Player(new Coord(index, BoardSize - 1), PlayerColours[1]));
+        players.Add(new Player(new Coord(index, 0), PlayerColours[0], new Coord(-1, BoardSize - 1)));
+        players.Add(new Player(new Coord(index, BoardSize - 1), PlayerColours[1], new Coord(-1, 0)));
         if (NumOfPlayers == 4)
         {
-            players.Add(new Player(new Coord(0, index), PlayerColours[2]));
-            players.Add(new Player(new Coord(BoardSize - 1, index), PlayerColours[3]));
+            players.Add(new Player(new Coord(0, index), PlayerColours[2], new Coord(BoardSize - 1, -1)));
+            players.Add(new Player(new Coord(BoardSize - 1, index), PlayerColours[3], new Coord(0, -1)));
         }
 
         for (int i = 0; i < BoardSize - 1; i++)
