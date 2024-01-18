@@ -7,8 +7,8 @@ namespace Quoridor;
 
 public class WallButton : HoverButton
 {
-    private int displayWidth;
-    private int displayHeight;
+    private readonly int displayWidth;
+    private readonly int displayHeight;
 
     public WallButton(int posX, int posY, bool isHorizontal) : base(posX, posY, GetWidth(isHorizontal), GetHeight(isHorizontal), WallColour)
     {
@@ -22,12 +22,12 @@ public class WallButton : HoverButton
 
     protected override void Display()
     {
-        DrawRectangle(posX, posY, displayWidth, displayHeight, colour);
+        DrawRectangle(posX, posY, width, height, colour);
     }
 
     protected override void HoverDisplay()
     {
         Display();
-        DrawRectangle(posX, posY, width, height, Settings.DefaultHoverTint);
+        DrawRectangle(posX, posY, displayWidth, displayHeight, Settings.DefaultHoverTint);
     }
 }
