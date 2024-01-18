@@ -58,8 +58,7 @@ public class Game
     public void ExecuteAction(Action action)
     {
         if (action.coord != null)
-        {
-
+        {            
             Coord coord = (Coord)action.coord;
 
             if (action.wall == null)
