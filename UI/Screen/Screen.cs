@@ -12,4 +12,9 @@ public abstract class Screen
     {
         button.OnClick += () => clickAction(action);
     }
+
+    protected void AddButtonAction(BoardSquareButton button, Action action)
+    {
+        button.OnClick += () => clickAction(action);
+    }
 }

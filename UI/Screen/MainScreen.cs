@@ -7,19 +7,21 @@ namespace Quoridor;
 public class MainScreen : Screen
 {
     private Board board;
-    private List<Button> squareButtons;
+
+    private Button[,] squareButtons;
 
     public MainScreen(Board board)
     {
         this.board = board;
-        squareButtons = new List<Button>();
+        squareButtons = new Button[BoardSize, BoardSize];
         InitialiseButtons();
     }
 
     public override void Display()
     {
         board.Display();
-        foreach (Button button in squareButtons) {
+        foreach (Button button in squareButtons)
+        {
             button.Render();
         }
         board.DisplayState();
@@ -32,9 +34,9 @@ public class MainScreen : Screen
             for (int j = 0; j < BoardSize; j++)
             {
                 Coord topLeft = Board.GetTopLeftCoord(i, j);
-                HoverButton button = new HoverButton(topLeft.x, topLeft.y, SquareSize, SquareSize, colour: BoardColour, hoverColour: SquareHoverColour);
+                BoardSquareButton button = new BoardSquareButton(topLeft.x, topLeft.y);
                 AddButtonAction(button, new Action(coord: new Coord(i, j)));
-                squareButtons.Add(button);
+                squareButtons[i, j] = button;
             }
         }
     }

@@ -59,6 +59,7 @@ public class Game
         if (action.coord != null)
         {
             Coord coord = (Coord)action.coord;
+            Console.WriteLine(coord);
             selectedPlayer = board.CheckSquareOccupied(coord);
             if (selectedPlayer != -1)
             {
