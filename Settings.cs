@@ -14,6 +14,7 @@ public static class Settings
 
     public static readonly Color DefaultButtonColour = Color.LIGHTGRAY;
     public static readonly Color DefaultButtonHoverColour = Color.DARKGRAY;
+    public static readonly Color DefaultHoverTint = new Color(0, 0, 0, 100);
 
     public static class Board
     {
@@ -27,6 +28,7 @@ public static class Settings
         public static readonly Color WallHoverColour = Color.DARKGRAY;
         public static readonly Color[] PlayerColours = new Color[] {Color.RED, Color.BLUE, Color.ORANGE, Color.GREEN};
 
+        public static readonly Color SquareTurnColour = new Color(170, 170, 170, 255);
         public static readonly Color SquareHighlightColour = new Color(170, 170, 170, 255);
         public const int SquareHighlightRadius = 13;
 

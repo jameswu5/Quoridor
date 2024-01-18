@@ -61,8 +61,7 @@ public class Game
             Coord coord = (Coord)action.coord;
             if (legalSquares.Contains(coord))
             {
-                board.MakeMove(turn, coord);
-                OnMove();
+                OnMove(coord);
             }
         }
     }
@@ -76,9 +75,10 @@ public class Game
         {
             mainScreen.SetSquareButtonHighlight(coord, true);
         }
+        mainScreen.SetSquareButtonSelected(board.players[turn].position, true);
     }
 
-    private void OnMove()
+    private void OnMove(Coord newSquare)
     {
         // Unhighlight all the legal moves
         foreach (Coord coord in legalSquares)
@@ -87,6 +87,9 @@ public class Game
             mainScreen.SetSquareButtonHighlight(coord, false);
         }
 
+        mainScreen.SetSquareButtonSelected(board.players[turn].position, false);
+
+        board.MakeMove(turn, newSquare);
         turn = (turn + 1) % Settings.Board.NumOfPlayers;
 
         legalSquares = board.GetLegalSquares(turn);
@@ -95,5 +98,7 @@ public class Game
         {
             mainScreen.SetSquareButtonHighlight(coord, true);
         }
+
+        mainScreen.SetSquareButtonSelected(board.players[turn].position, true);
     }
 }

@@ -42,4 +42,6 @@ public class MainScreen : Screen
     }
 
     public void SetSquareButtonHighlight(Coord coord, bool b) => squareButtons[coord.x, coord.y].highlighted = b;
+
+    public void SetSquareButtonSelected(Coord coord, bool b) => squareButtons[coord.x, coord.y].selected = b;
 }
