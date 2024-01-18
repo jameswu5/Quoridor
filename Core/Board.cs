@@ -14,6 +14,7 @@ public partial class Board
     {
         players = new List<Player>();
         walls = new List<Wall>();
+        InitialiseUI();
         NewGame();
     }
 

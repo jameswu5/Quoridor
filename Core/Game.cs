@@ -19,6 +19,7 @@ public class Game
         Raylib.SetTargetFPS(60);
 
         board = new Board();
+        board.clickAction += ExecuteAction;
         currentScreen = GameScreen.Main;
         mainScreen = new MainScreen(board);
         mainScreen.clickAction += ExecuteAction;
@@ -73,9 +74,9 @@ public class Game
         legalSquares = board.GetLegalSquares(turn);
         foreach (Coord coord in legalSquares)
         {
-            mainScreen.SetSquareButtonHighlight(coord, true);
+            board.SetSquareButtonHighlight(coord, true);
         }
-        mainScreen.SetSquareButtonSelected(board.players[turn].position, true);
+        board.SetSquareButtonSelected(board.players[turn].position, true);
     }
 
     private void OnMove(Coord newSquare)
@@ -83,11 +84,10 @@ public class Game
         // Unhighlight all the legal moves
         foreach (Coord coord in legalSquares)
         {
-            // I'm not a fan of this, this function should belong to Board, really
-            mainScreen.SetSquareButtonHighlight(coord, false);
+            board.SetSquareButtonHighlight(coord, false);
         }
 
-        mainScreen.SetSquareButtonSelected(board.players[turn].position, false);
+        board.SetSquareButtonSelected(board.players[turn].position, false);
 
         board.MakeMove(turn, newSquare);
         turn = (turn + 1) % Settings.Board.NumOfPlayers;
@@ -96,9 +96,9 @@ public class Game
 
         foreach (Coord coord in legalSquares)
         {
-            mainScreen.SetSquareButtonHighlight(coord, true);
+            board.SetSquareButtonHighlight(coord, true);
         }
 
-        mainScreen.SetSquareButtonSelected(board.players[turn].position, true);
+        board.SetSquareButtonSelected(board.players[turn].position, true);
     }
 }

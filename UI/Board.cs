@@ -7,11 +7,49 @@ namespace Quoridor;
 
 public partial class Board
 {
+    public System.Action<Quoridor.Action> clickAction;
+    private BoardSquareButton[,] squareButtons;
+
+    private void InitialiseUI()
+    {
+        squareButtons = new BoardSquareButton[BoardSize, BoardSize];
+        InitialiseButtons();
+    }
+
+    private void InitialiseButtons()
+    {
+        for (int i = 0; i < BoardSize; i++)
+        {
+            for (int j = 0; j < BoardSize; j++)
+            {
+                Coord topLeft = GetTopLeftCoord(i, j);
+                BoardSquareButton button = new BoardSquareButton(topLeft.x, topLeft.y);
+                AddButtonAction(button, new Action(coord: new Coord(i, j)));
+                squareButtons[i, j] = button;
+            }
+        }
+    }
+
+    private void AddButtonAction(BoardSquareButton button, Action action)
+    {
+        button.OnClick += () => clickAction(action);
+    }
+
+    public void SetSquareButtonHighlight(Coord coord, bool b) => squareButtons[coord.x, coord.y].highlighted = b;
+
+    public void SetSquareButtonSelected(Coord coord, bool b) => squareButtons[coord.x, coord.y].selected = b;
+
+    public void Display()
+    {
+        DisplayBoard();
+        DisplayButtons();
+        DisplayState();
+    }
 
     /// <summary>
     /// Displays the empty board
     /// </summary>
-    public void Display()
+    private void DisplayBoard()
     {
         // Border
         DrawRectangle(
@@ -30,6 +68,15 @@ public partial class Board
         {
             DrawRectangle(BoardPaddingX, BoardPaddingY + SquareSize + i * (SquareSize + WallWidth), BoardSideLength, WallWidth, WallColour);
             DrawRectangle(BoardPaddingX + SquareSize + i * (SquareSize + WallWidth), BoardPaddingY, WallWidth, BoardSideLength, WallColour);
+        }
+    }
+
+
+    private void DisplayButtons()
+    {
+        foreach (Button button in squareButtons)
+        {
+            button.Render();
         }
     }
 
