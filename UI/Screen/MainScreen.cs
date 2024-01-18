@@ -8,12 +8,12 @@ public class MainScreen : Screen
 {
     private Board board;
 
-    private Button[,] squareButtons;
+    private BoardSquareButton[,] squareButtons;
 
     public MainScreen(Board board)
     {
         this.board = board;
-        squareButtons = new Button[BoardSize, BoardSize];
+        squareButtons = new BoardSquareButton[BoardSize, BoardSize];
         InitialiseButtons();
     }
 
@@ -40,4 +40,8 @@ public class MainScreen : Screen
             }
         }
     }
+
+    public void SetSquareButtonHighlight(Coord coord, bool b) => squareButtons[coord.x, coord.y].highlighted = b;
+
+    public void SetSquareButtonSelected(Coord coord, bool b) => squareButtons[coord.x, coord.y].selected = b;
 }

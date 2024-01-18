@@ -7,16 +7,26 @@ namespace Quoridor;
 
 public class BoardSquareButton : HoverButton
 {
-    private bool highlighted;
+    public bool highlighted;
+    public bool selected;
 
     public BoardSquareButton(int posX, int posY) : base(posX, posY, SquareSize, SquareSize, BoardColour, SquareHoverColour)
     {
         highlighted = false;
+        selected = false;
     }
 
     protected override void Display()
     {
-        base.Display();
+        if (selected)
+        {
+            DrawRectangle(posX, posY, width, height, SquareTurnColour);
+        }
+        else
+        {
+            base.Display();
+        }
+
         if (highlighted)
         {
             Highlight();
@@ -25,7 +35,16 @@ public class BoardSquareButton : HoverButton
 
     protected override void HoverDisplay()
     {
-        base.HoverDisplay();
+        if (selected)
+        {
+            DrawRectangle(posX, posY, width, height, SquareTurnColour);
+            DrawRectangle(posX, posY, width, height, Settings.DefaultHoverTint);
+        }
+        else
+        {
+            base.HoverDisplay();
+        }
+
         if (highlighted)
         {
             Highlight();
@@ -34,6 +53,6 @@ public class BoardSquareButton : HoverButton
 
     private void Highlight()
     {
-        DrawCircle(posX + width / 2, posY + height / 2, (SquareSize - 10) / 2, Color.DARKGRAY);
+        DrawCircle(posX + width / 2, posY + height / 2, SquareHighlightRadius, SquareHighlightColour);
     }
 }

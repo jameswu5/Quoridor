@@ -7,8 +7,8 @@ public partial class Board
 {
     private static readonly int[] DIR = new int[] {0, 1, 0, -1, 0};
 
-    private List<Player> players;
-    private List<Wall> walls;
+    public List<Player> players;
+    public List<Wall> walls;
 
     public Board()
     {
@@ -70,4 +70,10 @@ public partial class Board
     }
 
     private static bool CheckInBounds(Coord coord) => coord.x >= 0 && coord.x < BoardSize && coord.y >= 0 && coord.y < BoardSize;
+
+
+    public void MakeMove(int playerIndex, Coord newSquare)
+    {
+        players[playerIndex].position = newSquare;
+    }
 }
