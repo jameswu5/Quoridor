@@ -59,6 +59,13 @@ public partial class Board
         }
     }
 
+    public void GameOver()
+    {
+        validWallsHor = new bool[BoardSize - 1, BoardSize - 1];
+        validWallsVer = new bool[BoardSize - 1, BoardSize - 1];
+        validMoves = new int[BoardSize, BoardSize];
+    }
+
     /// <summary>
     /// Returns the Player number if it's occupied, -1 otherwise
     /// </summary>

@@ -113,6 +113,12 @@ public class Game
 
         board.MakeMove(turn, newSquare, wall);
 
+        if (board.players[turn].ReachedGoal())
+        {
+            GameOver();
+            return;
+        }
+
         turn = (turn + 1) % Settings.Board.NumOfPlayers;
 
         legalSquares = board.GetLegalSquares(turn);
@@ -123,5 +129,11 @@ public class Game
         }
 
         board.SetSquareButtonSelected(board.players[turn].position, true);
+    }
+
+    private void GameOver()
+    {
+        legalSquares.Clear();
+        board.GameOver();
     }
 }
