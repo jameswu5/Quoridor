@@ -10,7 +10,7 @@ public class BoardSquareButton : HoverButton
     public bool highlighted;
     public bool selected;
 
-    public BoardSquareButton(int posX, int posY) : base(posX, posY, SquareSize, SquareSize, BoardColour, SquareHoverColour)
+    public BoardSquareButton(int posX, int posY) : base(posX, posY, SquareSize, SquareSize, BoardColour)
     {
         highlighted = false;
         selected = false;
@@ -35,20 +35,8 @@ public class BoardSquareButton : HoverButton
 
     protected override void HoverDisplay()
     {
-        if (selected)
-        {
-            DrawRectangle(posX, posY, width, height, SquareTurnColour);
-            DrawRectangle(posX, posY, width, height, Settings.DefaultHoverTint);
-        }
-        else
-        {
-            base.HoverDisplay();
-        }
-
-        if (highlighted)
-        {
-            Highlight();
-        }
+        Display();
+        DrawRectangle(posX, posY, width, height, Settings.DefaultHoverTint);
     }
 
     private void Highlight()
