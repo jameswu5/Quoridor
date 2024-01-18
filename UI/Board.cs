@@ -7,6 +7,7 @@ namespace Quoridor;
 
 public partial class Board
 {
+
     /// <summary>
     /// Displays the empty board
     /// </summary>

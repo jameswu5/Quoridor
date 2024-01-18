@@ -27,6 +27,9 @@ public static class Settings
         public static readonly Color WallHoverColour = Color.DARKGRAY;
         public static readonly Color[] PlayerColours = new Color[] {Color.RED, Color.BLUE, Color.ORANGE, Color.GREEN};
 
+        public static readonly Color SquareHighlightColour = new Color(170, 170, 170, 255);
+        public const int SquareHighlightRadius = 13;
+
         public const int BorderWidth = 10;
         public const int SquareSize = 50;
         public const int PlayerRadius = 20;

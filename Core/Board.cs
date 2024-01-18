@@ -70,4 +70,10 @@ public partial class Board
     }
 
     private static bool CheckInBounds(Coord coord) => coord.x >= 0 && coord.x < BoardSize && coord.y >= 0 && coord.y < BoardSize;
+
+
+    public void MakeMove(int playerIndex, Coord newSquare)
+    {
+        players[playerIndex].position = newSquare;
+    }
 }

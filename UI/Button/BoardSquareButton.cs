@@ -7,7 +7,7 @@ namespace Quoridor;
 
 public class BoardSquareButton : HoverButton
 {
-    private bool highlighted;
+    public bool highlighted;
 
     public BoardSquareButton(int posX, int posY) : base(posX, posY, SquareSize, SquareSize, BoardColour, SquareHoverColour)
     {
@@ -34,6 +34,6 @@ public class BoardSquareButton : HoverButton
 
     private void Highlight()
     {
-        DrawCircle(posX + width / 2, posY + height / 2, (SquareSize - 10) / 2, Color.DARKGRAY);
+        DrawCircle(posX + width / 2, posY + height / 2, SquareHighlightRadius, SquareHighlightColour);
     }
 }

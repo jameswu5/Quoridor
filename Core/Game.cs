@@ -10,7 +10,7 @@ public class Game
     private MainScreen mainScreen;
 
     private Board board;
-    private int selectedPlayer;
+    private int turn;
     private List<Coord> legalSquares;
 
     public Game()
@@ -23,7 +23,7 @@ public class Game
         mainScreen = new MainScreen(board);
         mainScreen.clickAction += ExecuteAction;
 
-        selectedPlayer = -1;
+        turn = 0;
         legalSquares = new List<Coord>();
 
         NewGame();
@@ -59,11 +59,10 @@ public class Game
         if (action.coord != null)
         {
             Coord coord = (Coord)action.coord;
-            Console.WriteLine(coord);
-            selectedPlayer = board.CheckSquareOccupied(coord);
-            if (selectedPlayer != -1)
+            if (legalSquares.Contains(coord))
             {
-                legalSquares = board.GetLegalSquares(selectedPlayer);
+                board.MakeMove(turn, coord);
+                OnMove();
             }
         }
     }
@@ -71,7 +70,30 @@ public class Game
     public void NewGame()
     {
         board.NewGame();
-        selectedPlayer = -1;
-        legalSquares.Clear();
+        turn = 0;
+        legalSquares = board.GetLegalSquares(turn);
+        foreach (Coord coord in legalSquares)
+        {
+            mainScreen.SetSquareButtonHighlight(coord, true);
+        }
+    }
+
+    private void OnMove()
+    {
+        // Unhighlight all the legal moves
+        foreach (Coord coord in legalSquares)
+        {
+            // I'm not a fan of this, this function should belong to Board, really
+            mainScreen.SetSquareButtonHighlight(coord, false);
+        }
+
+        turn = (turn + 1) % Settings.Board.NumOfPlayers;
+
+        legalSquares = board.GetLegalSquares(turn);
+
+        foreach (Coord coord in legalSquares)
+        {
+            mainScreen.SetSquareButtonHighlight(coord, true);
+        }
     }
 }
