@@ -14,7 +14,8 @@ public class Player
         this.colour = colour;
     }
 
-    public void SetPosition(Coord coord) {
+    public void SetPosition(Coord coord)
+    {
         position = coord;
     }
 }

@@ -103,8 +103,15 @@ public partial class Board
         {
             for (int j = 0; j < BoardSize - 1; j++)
             {
-                hWallButtons[BoardSize - i - 2, j].Render();
-                vWallButtons[i, j].Render();
+                // Only render the buttons associated with valid walls
+                if (validWallsHor[BoardSize - i - 2, j])
+                {
+                    hWallButtons[BoardSize - i - 2, j].Render();
+                }
+                if (validWallsVer[i, j])
+                {
+                    vWallButtons[i, j].Render();
+                }
             }
         }
     }
