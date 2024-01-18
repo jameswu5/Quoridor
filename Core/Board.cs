@@ -61,9 +61,21 @@ public partial class Board
         for (int d = 0; d < 4; d++)
         {
             Coord newCoord = new Coord(coord.x + DIR[d], coord.y + DIR[d+1]);
-            if (CheckInBounds(newCoord) && CheckSquareOccupied(newCoord) == -1)
+
+            if (CheckSquareOccupied(newCoord) == -1)
             {
-                legalSquares.Add(newCoord);
+                if (CheckInBounds(newCoord))
+                {
+                    legalSquares.Add(newCoord);
+                }
+            }
+            else
+            {
+                Coord newCoord2 = new Coord(newCoord.x + DIR[d], newCoord.y + DIR[d+1]);
+                if (CheckInBounds(newCoord2) && CheckSquareOccupied(newCoord2) == -1)
+                {
+                    legalSquares.Add(newCoord2);
+                }
             }
         }
 

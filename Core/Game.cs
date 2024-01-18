@@ -15,7 +15,7 @@ public class Game
 
     public Game()
     {
-        Raylib.InitWindow(Settings.ScreenWidth, Settings.ScreenHeight, "Game");
+        Raylib.InitWindow(Settings.ScreenWidth, Settings.ScreenHeight, "Quoridor");
         Raylib.SetTargetFPS(60);
 
         board = new Board();
