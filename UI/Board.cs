@@ -99,11 +99,6 @@ public partial class Board
             button.Render();
         }
 
-        foreach (WallButton button in hWallButtons)
-        {
-            button.Render();
-        }
-
         for (int i = 0; i < BoardSize - 1; i++)
         {
             for (int j = 0; j < BoardSize - 1; j++)
