@@ -1,5 +1,6 @@
 using System;
 using static Quoridor.Settings.Board;
+using static Quoridor.Move;
 
 namespace Quoridor;
 
@@ -159,15 +160,15 @@ public partial class Board
 
     private static bool CheckInBounds(Coord coord) => coord.x >= 0 && coord.x < BoardSize && coord.y >= 0 && coord.y < BoardSize;
 
-    public void MakeMove(Coord newSquare, Wall? wall)
+    public void MakeMove(int move)
     {
-        if (wall == null)
+        if (IsWall(move))
         {
-            players[turn].position = newSquare;
+            PlaceWall(RetrieveWall(move));
         }
         else
         {
-            PlaceWall(wall);
+            players[turn].position = RetrieveTargetCoord(move);
         }
 
         if (players[turn].ReachedGoal())

@@ -1,5 +1,6 @@
 using System;
 using Raylib_cs;
+using static Quoridor.Move;
 
 namespace Quoridor;
 
@@ -60,7 +61,7 @@ public class Game
             {
                 if (board.legalSquares.Contains(coord))
                 {
-                    OnMove(coord);
+                    OnMove(GenerateMove(board.players[board.turn].position, coord));
                 }
             }
             else
@@ -70,14 +71,14 @@ public class Game
                 {
                     if (board.validWallsHor[wall.x, wall.y])
                     {
-                        OnMove(coord, action.wall);
+                        OnMove(GenerateMove(action.wall));
                     }
                 }
                 else
                 {
                     if (board.validWallsVer[wall.x, wall.y])
                     {
-                        OnMove(coord, action.wall);
+                        OnMove(GenerateMove(action.wall));
                     }
                 }
             }
@@ -94,7 +95,7 @@ public class Game
         board.SetSquareButtonSelected(board.players[board.turn].position, true);
     }
 
-    private void OnMove(Coord newSquare, Wall? wall = null)
+    private void OnMove(int move)
     {
         // Unhighlight all the legal moves
         foreach (Coord pos in board.legalSquares)
@@ -104,7 +105,7 @@ public class Game
 
         board.SetSquareButtonSelected(board.players[board.turn].position, false);
 
-        board.MakeMove(newSquare, wall);
+        board.MakeMove(move);
 
         foreach (Coord pos in board.legalSquares)
         {
