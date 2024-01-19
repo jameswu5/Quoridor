@@ -10,8 +10,6 @@ public class Game
     private MainScreen mainScreen;
 
     private Board board;
-    private int turn;
-    private List<Coord> legalSquares;
 
     public Game()
     {
@@ -23,9 +21,6 @@ public class Game
         currentScreen = GameScreen.Main;
         mainScreen = new MainScreen(board);
         mainScreen.clickAction += ExecuteAction;
-
-        turn = 0;
-        legalSquares = new List<Coord>();
 
         NewGame();
     }
@@ -63,14 +58,14 @@ public class Game
 
             if (action.wall == null)
             {
-                if (legalSquares.Contains(coord))
+                if (board.legalSquares.Contains(coord))
                 {
                     OnMove(coord);
                 }
             }
             else
             {
-                Wall wall = (Wall)action.wall;
+                Wall wall = action.wall;
                 if (wall.isHorizontal)
                 {
                     if (board.validWallsHor[wall.x, wall.y])
@@ -92,48 +87,30 @@ public class Game
     public void NewGame()
     {
         board.NewGame();
-        turn = 0;
-        legalSquares = board.GetLegalSquares(turn);
-        foreach (Coord coord in legalSquares)
+        foreach (Coord coord in board.legalSquares)
         {
             board.SetSquareButtonHighlight(coord, true);
         }
-        board.SetSquareButtonSelected(board.players[turn].position, true);
+        board.SetSquareButtonSelected(board.players[board.turn].position, true);
     }
 
     private void OnMove(Coord newSquare, Wall? wall = null)
     {
         // Unhighlight all the legal moves
-        foreach (Coord pos in legalSquares)
+        foreach (Coord pos in board.legalSquares)
         {
             board.SetSquareButtonHighlight(pos, false);
         }
 
-        board.SetSquareButtonSelected(board.players[turn].position, false);
+        board.SetSquareButtonSelected(board.players[board.turn].position, false);
 
-        board.MakeMove(turn, newSquare, wall);
+        board.MakeMove(newSquare, wall);
 
-        if (board.players[turn].ReachedGoal())
-        {
-            GameOver();
-            return;
-        }
-
-        turn = (turn + 1) % Settings.Board.NumOfPlayers;
-
-        legalSquares = board.GetLegalSquares(turn);
-
-        foreach (Coord pos in legalSquares)
+        foreach (Coord pos in board.legalSquares)
         {
             board.SetSquareButtonHighlight(pos, true);
         }
 
-        board.SetSquareButtonSelected(board.players[turn].position, true);
-    }
-
-    private void GameOver()
-    {
-        legalSquares.Clear();
-        board.GameOver();
+        board.SetSquareButtonSelected(board.players[board.turn].position, true);
     }
 }

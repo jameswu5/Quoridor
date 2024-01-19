@@ -17,8 +17,8 @@ public static class Settings
 
     public static class Board
     {
-        public const int BoardSize = 5;
-        public const int NumOfPlayers = 2;
+        public const int BoardSize = 9;
+        public const int NumOfPlayers = 4;
 
         public static readonly Color BorderColour = Color.DARKGRAY;
         public static readonly Color BoardColour = ScreenColour;

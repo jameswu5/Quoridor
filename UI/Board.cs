@@ -152,7 +152,7 @@ public partial class Board
 
     private void DisplayGameOverText()
     {
-        string gameOverText = $"Player {1} wins!";
+        string gameOverText = $"Player {turn + 1} wins!";
         int textLength = MeasureText(gameOverText, Settings.DefaultFontSize);
         int textPosX = (Settings.ScreenWidth - textLength) / 2;
         int textPosY = Settings.ScreenHeight - BoardPaddingY + (BoardPaddingY - Settings.DefaultFontSize) / 2;
