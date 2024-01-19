@@ -159,15 +159,15 @@ public partial class Board
 
     private static bool CheckInBounds(Coord coord) => coord.x >= 0 && coord.x < BoardSize && coord.y >= 0 && coord.y < BoardSize;
 
-    public void MakeMove(Coord newSquare, Wall? wall)
+    public void MakeMove(int move)
     {
-        if (wall == null)
+        if (Move.IsWall(move))
         {
-            players[turn].position = newSquare;
+            PlaceWall(Move.RetrieveWall(move));
         }
         else
         {
-            PlaceWall(wall);
+            players[turn].position = Move.RetrieveTargetCoord(move);
         }
 
         if (players[turn].ReachedGoal())
@@ -179,6 +179,27 @@ public partial class Board
         turn = (turn + 1) % NumOfPlayers;
         legalSquares = GetLegalSquares(turn);
     }
+
+    // public void MakeMove(Coord newSquare, Wall? wall)
+    // {
+    //     if (wall == null)
+    //     {
+    //         players[turn].position = newSquare;
+    //     }
+    //     else
+    //     {
+    //         PlaceWall(wall);
+    //     }
+
+    //     if (players[turn].ReachedGoal())
+    //     {
+    //         GameOver();
+    //         return;
+    //     }
+
+    //     turn = (turn + 1) % NumOfPlayers;
+    //     legalSquares = GetLegalSquares(turn);
+    // }
 
     public void PlaceWall(Wall wall)
     {

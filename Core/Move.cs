@@ -44,4 +44,22 @@ public static class Move
         move |= (wall.isHorizontal ? 1 : 0) << IsHorizontalShift;
         return move;
     }
+
+    public static bool IsWall(int move) => (move & IsWallMask) > 0;
+
+    public static bool IsHorizontal(int move) => (move & IsHorizontalMask) > 0;
+
+    public static int GetStartX(int move) => (move & StartXMask) >> StartXShift;
+
+    public static int GetStartY(int move) => (move & StartYMask) >> StartYShift;
+
+    public static int GetTargetX(int move) => (move & TargetXMask) >> TargetXShift;
+
+    public static int GetTargetY(int move) => (move & TargetYMask) >> TargetYShift;
+
+    public static Coord RetrieveStartCoord(int move) => new Coord(GetStartX(move), GetStartY(move));
+
+    public static Coord RetrieveTargetCoord(int move) => new Coord(GetTargetX(move), GetTargetY(move));
+
+    public static Wall RetrieveWall(int move) => new Wall(move & TargetXMask, move & TargetYMask, IsHorizontal(move));
 }
