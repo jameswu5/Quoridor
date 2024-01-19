@@ -1,4 +1,5 @@
 using System;
+using Raylib_cs;
 using static Quoridor.Settings.Board;
 using static Quoridor.Move;
 
@@ -41,12 +42,13 @@ public partial class Board
         walls.Clear();
 
         int index = BoardSize >> 1;
-        players.Add(new Player(new Coord(index, 0), PlayerColours[0], new Coord(-1, BoardSize - 1)));
-        players.Add(new Player(new Coord(index, BoardSize - 1), PlayerColours[1], new Coord(-1, 0)));
+
+        players.Add(CreateHuman(0, new Coord(index, 0), PlayerColours[0], new Coord(-1, BoardSize - 1)));
+        players.Add(CreateHuman(1, new Coord(index, BoardSize - 1), PlayerColours[1], new Coord(-1, 0)));
         if (NumOfPlayers == 4)
         {
-            players.Add(new Player(new Coord(0, index), PlayerColours[2], new Coord(BoardSize - 1, -1)));
-            players.Add(new Player(new Coord(BoardSize - 1, index), PlayerColours[3], new Coord(0, -1)));
+            players.Add(CreateHuman(2, new Coord(0, index), PlayerColours[2], new Coord(BoardSize - 1, -1)));
+            players.Add(CreateHuman(3, new Coord(BoardSize - 1, index), PlayerColours[3], new Coord(0, -1)));
         }
 
         for (int i = 0; i < BoardSize - 1; i++)
@@ -214,5 +216,21 @@ public partial class Board
             validMoves[i+1, j  ] &= ~dirMask[3];
             validMoves[i+1, j+1] &= ~dirMask[3];
         }
+    }
+
+
+
+    public Human CreateHuman(int ID, Coord startPos, Color colour, Coord goal)
+    {
+        Human human = new Human(this, ID, startPos, colour, goal);
+        human.PlayChosenMove += MakeMove;
+        return human;
+    }
+
+    public Bot CreateBot(int ID, Coord startPos, Color colour, Coord goal)
+    {
+        Bot bot = new Bot(this, ID, startPos, colour, goal);
+        bot.PlayChosenMove += MakeMove;
+        return bot;
     }
 }
