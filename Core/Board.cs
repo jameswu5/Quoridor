@@ -1,5 +1,6 @@
 using System;
 using static Quoridor.Settings.Board;
+using static Quoridor.Move;
 
 namespace Quoridor;
 
@@ -161,13 +162,13 @@ public partial class Board
 
     public void MakeMove(int move)
     {
-        if (Move.IsWall(move))
+        if (IsWall(move))
         {
-            PlaceWall(Move.RetrieveWall(move));
+            PlaceWall(RetrieveWall(move));
         }
         else
         {
-            players[turn].position = Move.RetrieveTargetCoord(move);
+            players[turn].position = RetrieveTargetCoord(move);
         }
 
         if (players[turn].ReachedGoal())
@@ -179,27 +180,6 @@ public partial class Board
         turn = (turn + 1) % NumOfPlayers;
         legalSquares = GetLegalSquares(turn);
     }
-
-    // public void MakeMove(Coord newSquare, Wall? wall)
-    // {
-    //     if (wall == null)
-    //     {
-    //         players[turn].position = newSquare;
-    //     }
-    //     else
-    //     {
-    //         PlaceWall(wall);
-    //     }
-
-    //     if (players[turn].ReachedGoal())
-    //     {
-    //         GameOver();
-    //         return;
-    //     }
-
-    //     turn = (turn + 1) % NumOfPlayers;
-    //     legalSquares = GetLegalSquares(turn);
-    // }
 
     public void PlaceWall(Wall wall)
     {

@@ -13,7 +13,7 @@ public static class Move
     public const int TargetXShift = TargetYShift + 4;
     public const int StartYShift = TargetXShift + 4;
     public const int StartXShift = StartYShift + 4;
-    public const int IsHorizontalShift = StartXShift + 1;
+    public const int IsHorizontalShift = StartXShift + 4;
     public const int IsWallShift = IsHorizontalShift + 1;
 
     public const int StartXMask = 0b1111 << StartXShift;
@@ -61,5 +61,5 @@ public static class Move
 
     public static Coord RetrieveTargetCoord(int move) => new Coord(GetTargetX(move), GetTargetY(move));
 
-    public static Wall RetrieveWall(int move) => new Wall(move & TargetXMask, move & TargetYMask, IsHorizontal(move));
+    public static Wall RetrieveWall(int move) => new Wall(GetTargetX(move), GetTargetY(move), IsHorizontal(move));
 }
