@@ -14,6 +14,10 @@ public partial class Board
     public bool[,] validWallsVer;
     public int[,] validMoves; // Each square will be 0b____ : up, right, down, left
 
+    public int turn;
+    public List<Coord> legalSquares;
+    public bool gameOver;
+
     public static readonly int[] dirMask = new int[] {0b1000, 0b0100, 0b0010, 0b0001};
 
     public Board()
@@ -23,6 +27,9 @@ public partial class Board
         validWallsHor = new bool[BoardSize - 1, BoardSize - 1];
         validWallsVer = new bool[BoardSize - 1, BoardSize - 1];
         validMoves = new int[BoardSize, BoardSize];
+        turn = 0;
+        gameOver = false;
+        legalSquares = new List<Coord>();
         InitialiseUI();
         NewGame();
     }
@@ -57,6 +64,16 @@ public partial class Board
                 validMoves[i, j] = 0b1111;
             }
         }
+
+        turn = 0;
+        gameOver = false;
+        legalSquares = GetLegalSquares(turn);
+    }
+
+    public void GameOver()
+    {
+        legalSquares.Clear();
+        gameOver = true;
     }
 
     /// <summary>
@@ -142,16 +159,25 @@ public partial class Board
 
     private static bool CheckInBounds(Coord coord) => coord.x >= 0 && coord.x < BoardSize && coord.y >= 0 && coord.y < BoardSize;
 
-    public void MakeMove(int playerIndex, Coord newSquare, Wall? wall)
+    public void MakeMove(Coord newSquare, Wall? wall)
     {
         if (wall == null)
         {
-            players[playerIndex].position = newSquare;
+            players[turn].position = newSquare;
         }
         else
         {
             PlaceWall(wall);
         }
+
+        if (players[turn].ReachedGoal())
+        {
+            GameOver();
+            return;
+        }
+
+        turn = (turn + 1) % NumOfPlayers;
+        legalSquares = GetLegalSquares(turn);
     }
 
     public void PlaceWall(Wall wall)

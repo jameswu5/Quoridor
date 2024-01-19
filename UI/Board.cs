@@ -62,7 +62,14 @@ public partial class Board
     public void Display()
     {
         DisplayBoard();
-        DisplayButtons();
+        if (gameOver)
+        {
+            DisplayGameOverText();
+        }
+        else
+        {
+            DisplayButtons();
+        }
         DisplayState();
     }
 
@@ -142,4 +149,13 @@ public partial class Board
     }
 
     public static Coord GetTopLeftCoord(Coord coord) => GetTopLeftCoord(coord.x, coord.y);
+
+    private void DisplayGameOverText()
+    {
+        string gameOverText = $"Player {turn + 1} wins!";
+        int textLength = MeasureText(gameOverText, Settings.DefaultFontSize);
+        int textPosX = (Settings.ScreenWidth - textLength) / 2;
+        int textPosY = Settings.ScreenHeight - BoardPaddingY + (BoardPaddingY - Settings.DefaultFontSize) / 2;
+        DrawText(gameOverText, textPosX, textPosY, Settings.DefaultFontSize, Color.DARKGRAY);
+    }
 }
