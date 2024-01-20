@@ -1,11 +1,15 @@
 using System;
+using Raylib_cs;
 using static Quoridor.Settings.Board;
 using static Quoridor.Move;
+using System.Collections;
 
 namespace Quoridor;
 
 public partial class Board
 {
+    public enum PlayerType {Human, Bot};
+
     private static readonly int[] DIR = new int[] {0, 1, 0, -1, 0};
 
     public List<Player> players;
@@ -20,6 +24,8 @@ public partial class Board
     public bool gameOver;
 
     public static readonly int[] dirMask = new int[] {0b1000, 0b0100, 0b0010, 0b0001};
+
+    public event System.Action<int> playMove;
 
     public Board()
     {
@@ -41,12 +47,13 @@ public partial class Board
         walls.Clear();
 
         int index = BoardSize >> 1;
-        players.Add(new Player(new Coord(index, 0), PlayerColours[0], new Coord(-1, BoardSize - 1)));
-        players.Add(new Player(new Coord(index, BoardSize - 1), PlayerColours[1], new Coord(-1, 0)));
+
+        players.Add(CreatePlayer(PlayerTypes[0], 0, new Coord(index, 0), PlayerColours[0], new Coord(-1, BoardSize - 1)));
+        players.Add(CreatePlayer(PlayerTypes[1], 1, new Coord(index, BoardSize - 1), PlayerColours[1], new Coord(-1, 0)));
         if (NumOfPlayers == 4)
         {
-            players.Add(new Player(new Coord(0, index), PlayerColours[2], new Coord(BoardSize - 1, -1)));
-            players.Add(new Player(new Coord(BoardSize - 1, index), PlayerColours[3], new Coord(0, -1)));
+            players.Add(CreatePlayer(PlayerTypes[2], 2, new Coord(0, index), PlayerColours[2], new Coord(BoardSize - 1, -1)));
+            players.Add(CreatePlayer(PlayerTypes[3], 3, new Coord(BoardSize - 1, index), PlayerColours[3], new Coord(0, -1)));
         }
 
         for (int i = 0; i < BoardSize - 1; i++)
@@ -69,6 +76,7 @@ public partial class Board
         turn = 0;
         gameOver = false;
         legalSquares = GetLegalSquares(turn);
+        players[turn].TurnToMove();
     }
 
     public void GameOver()
@@ -179,6 +187,8 @@ public partial class Board
 
         turn = (turn + 1) % NumOfPlayers;
         legalSquares = GetLegalSquares(turn);
+
+        players[turn].TurnToMove();
     }
 
     public void PlaceWall(Wall wall)
@@ -214,5 +224,39 @@ public partial class Board
             validMoves[i+1, j  ] &= ~dirMask[3];
             validMoves[i+1, j+1] &= ~dirMask[3];
         }
+    }
+
+    public Player CreatePlayer(PlayerType playerType, int ID, Coord startPos, Color colour, Coord goal)
+    {
+        switch (playerType)
+        {
+            case PlayerType.Human:
+                return CreateHuman(ID, startPos, colour, goal);
+            case PlayerType.Bot:
+                return CreateBot(ID, startPos, colour, goal);
+            default:
+                throw new Exception("Player type not found");
+        }
+    }
+
+    public Human CreateHuman(int ID, Coord startPos, Color colour, Coord goal)
+    {
+        Human human = new Human(this, ID, startPos, colour, goal);
+        human.PlayChosenMove += playMove;
+        return human;
+    }
+
+    public Bot CreateBot(int ID, Coord startPos, Color colour, Coord goal)
+    {
+        Bot bot = new Bot(this, ID, startPos, colour, goal);
+        bot.PlayChosenMove += playMove;
+        return bot;
+    }
+
+    // This is run every frame
+    public void Update()
+    {
+        Display();
+        players[turn].Update();
     }
 }

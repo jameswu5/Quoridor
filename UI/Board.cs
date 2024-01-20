@@ -66,7 +66,7 @@ public partial class Board
         {
             DisplayGameOverText();
         }
-        else
+        else if (PlayerTypes[turn] == PlayerType.Human)
         {
             DisplayButtons();
         }

@@ -19,6 +19,13 @@ public static class Settings
     {
         public const int BoardSize = 9;
         public const int NumOfPlayers = 4;
+        public static readonly Quoridor.Board.PlayerType[] PlayerTypes = new Quoridor.Board.PlayerType[]
+        {
+            Quoridor.Board.PlayerType.Human,
+            Quoridor.Board.PlayerType.Bot,
+            Quoridor.Board.PlayerType.Bot,
+            Quoridor.Board.PlayerType.Bot
+        };
 
         public static readonly Color BorderColour = Color.DARKGRAY;
         public static readonly Color BoardColour = ScreenColour;
