@@ -1,5 +1,4 @@
 using System;
-using System.Reflection;
 using Raylib_cs;
 
 namespace Quoridor;
@@ -47,11 +46,6 @@ public static class Settings
         public const int BoardSideLength = BoardSize * (SquareSize + WallWidth) - WallWidth;
         public const int BoardPaddingX = (ScreenWidth - BoardSideLength) >> 1;
         public const int BoardPaddingY = (ScreenHeight - BoardSideLength) >> 1;
-
-        // public const int WLTitleFontSize = 40;
-        // public const int WLFontSize = 28;
-        // public const int WLTitlePadding = 40;
-        // public const int WLTextPadding = 20;
 
         public const int WLCircleRadius = 7;
         public const int WLCirclePadding = 7;
