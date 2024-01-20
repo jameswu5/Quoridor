@@ -94,7 +94,7 @@ public partial class Board
 
         turn = 0;
         gameOver = false;
-        GetLegalMoves(turn);
+        legalMoves = GetLegalMoves(turn);
         moveCache.Clear();
         moveCache.Push(new List<int>(legalMoves));
         gameMoves.Clear();
@@ -200,7 +200,7 @@ public partial class Board
         }
 
         turn = (turn + 1) % NumOfPlayers;
-        GetLegalMoves(turn);
+        legalMoves = GetLegalMoves(turn);
         moveCache.Push(new List<int>(legalMoves));
         gameMoves.Push(move);
     }
@@ -352,19 +352,19 @@ public partial class Board
         return bot;
     }
 
-    public void GetLegalMoves(int playerIndex)
+    public List<int> GetLegalMoves(int playerIndex)
     {
-        legalMoves.Clear();
+        List<int> res = new();
         List<Coord> legalSquares = GetLegalSquares(playerIndex);
 
         foreach (Coord coord in legalSquares)
         {
-            legalMoves.Add(GenerateMove(players[playerIndex].position, coord));
+            res.Add(GenerateMove(players[playerIndex].position, coord));
         }
         
         if (players[playerIndex].wallsLeft == 0)
         {
-            return;
+            return res;
         }
 
         for (int i = 0; i < BoardSize - 1; i++)
@@ -373,14 +373,16 @@ public partial class Board
             {
                 if (validWallsHor[i, j])
                 {
-                    legalMoves.Add(GenerateMove(new Wall(i, j, true)));
+                    res.Add(GenerateMove(new Wall(i, j, true)));
                 }
                 if (validWallsVer[i, j])
                 {
-                    legalMoves.Add(GenerateMove(new Wall(i, j, false)));
+                    res.Add(GenerateMove(new Wall(i, j, false)));
                 }
             }
         }
+
+        return res;
     }
 
     public List<Coord> GetLegalSquareMoves()
