@@ -17,9 +17,6 @@ public class RandomBot : Bot
 
     public override void ChooseMove()
     {
-        // Implement the move selection algorithm here.
-
-        // Simple example: pick randomly
         int num = rng.Next(board.legalMoves.Count);
         chosenMove = board.legalMoves[num];
         moveFound = true;
