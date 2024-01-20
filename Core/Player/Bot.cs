@@ -32,7 +32,7 @@ public class Bot : Player
         // Implement the move selection algorithm here.
 
         // Simple example: choose the first move available
-        chosenMove = Move.GenerateMove(board.players[ID].position, board.legalSquares[0]);
+        chosenMove = board.legalMoves[0];
         moveFound = true;
     }
 
