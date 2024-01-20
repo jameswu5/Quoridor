@@ -97,7 +97,6 @@ public partial class Board
     /// <summary>
     /// Returns the Player number if it's occupied, -1 otherwise
     /// </summary>
-    /// <returns></returns>
     public int CheckSquareOccupied(Coord coord)
     {
         for (int i = 0; i < NumOfPlayers; i++)
@@ -113,7 +112,6 @@ public partial class Board
     /// <summary>
     /// Return the legal squares a player can move to
     /// </summary>
-    /// <returns></returns>
     public void GetLegalSquares(int playerIndex)
     {
         legalSquares.Clear();
@@ -204,11 +202,13 @@ public partial class Board
         walls.Add(wall);
         int i = wall.x;
         int j = wall.y;
+
+        validWallsVer[i, j] = false;
+        validWallsHor[i, j] = false;
+
         if (wall.isHorizontal)
         {
-            validWallsVer[i, j] = false;
-            validWallsHor[i, j] = false;
-            validWallsHor[Math.Min(i + 1, BoardSize - 2), j] = false;
+            validWallsHor[Math.Min(i+1, BoardSize-2), j] = false;
             validWallsHor[Math.Max(0, i-1), j] = false;
 
             // Cannot move up
@@ -220,10 +220,8 @@ public partial class Board
         }
         else
         {
-            validWallsHor[i, j] = false;
-            validWallsVer[i, j] = false;
-            validWallsVer[i, Math.Min(j + 1, BoardSize - 2)] = false;
-            validWallsVer[i, Math.Max(0, j - 1)] = false;
+            validWallsVer[i, Math.Min(j+1, BoardSize-2)] = false;
+            validWallsVer[i, Math.Max(0, j-1)] = false;
 
             // Cannot move right
             validMoves[i, j  ] &= ~dirMask[1];
@@ -268,20 +266,22 @@ public partial class Board
             legalMoves.Add(GenerateMove(players[playerIndex].position, coord));
         }
         
-        if (players[playerIndex].wallsLeft > 0)
+        if (players[playerIndex].wallsLeft == 0)
         {
-            for (int i = 0; i < BoardSize - 1; i++)
+            return;
+        }
+
+        for (int i = 0; i < BoardSize - 1; i++)
+        {
+            for (int j = 0; j < BoardSize - 1; j++)
             {
-                for (int j = 0; j < BoardSize - 1; j++)
+                if (validWallsHor[i, j])
                 {
-                    if (validWallsHor[i, j])
-                    {
-                        legalMoves.Add(GenerateMove(new Wall(i, j, true)));
-                    }
-                    if (validWallsVer[i, j])
-                    {
-                        legalMoves.Add(GenerateMove(new Wall(i, j, false)));
-                    }
+                    legalMoves.Add(GenerateMove(new Wall(i, j, true)));
+                }
+                if (validWallsVer[i, j])
+                {
+                    legalMoves.Add(GenerateMove(new Wall(i, j, false)));
                 }
             }
         }
