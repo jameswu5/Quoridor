@@ -94,24 +94,18 @@ public partial class Board
         gameOver = true;
     }
 
-    /// <summary>
-    /// Returns the Player number if it's occupied, -1 otherwise
-    /// </summary>
-    public int CheckSquareOccupied(Coord coord)
+    public bool CheckSquareOccupied(Coord coord)
     {
         for (int i = 0; i < NumOfPlayers; i++)
         {
             if (players[i].position == coord)
             {
-                return i;
+                return true;
             }
         }
-        return -1;
+        return false;
     }
 
-    /// <summary>
-    /// Return the legal squares a player can move to
-    /// </summary>
     public void GetLegalSquares(int playerIndex)
     {
         legalSquares.Clear();
@@ -127,7 +121,7 @@ public partial class Board
 
             Coord newCoord = new Coord(coord.x + DIR[d], coord.y + DIR[d+1]);
 
-            if (CheckSquareOccupied(newCoord) == -1)
+            if (!CheckSquareOccupied(newCoord))
             {
                 if (CheckInBounds(newCoord))
                 {
@@ -145,7 +139,7 @@ public partial class Board
                     if ((validMoves[newCoord.x, newCoord.y] & dirMask[d1]) > 0)
                     {
                         Coord newCoord2 = new Coord(newCoord.x + DIR[d1], newCoord.y + DIR[d1 + 1]);
-                        if (CheckInBounds(newCoord2) && CheckSquareOccupied(newCoord2) == -1)
+                        if (CheckInBounds(newCoord2) && !CheckSquareOccupied(newCoord2))
                         {
                             legalSquares.Add(newCoord2);
                         }
@@ -153,7 +147,7 @@ public partial class Board
                     if ((validMoves[newCoord.x, newCoord.y] & dirMask[d2]) > 0)
                     {
                         Coord newCoord2 = new Coord(newCoord.x + DIR[d2], newCoord.y + DIR[d2 + 1]);
-                        if (CheckInBounds(newCoord2) && CheckSquareOccupied(newCoord2) == -1)
+                        if (CheckInBounds(newCoord2) && !CheckSquareOccupied(newCoord2))
                         {
                             legalSquares.Add(newCoord2);
                         }
@@ -162,7 +156,7 @@ public partial class Board
                 else
                 {
                     Coord newCoord2 = new Coord(newCoord.x + DIR[d], newCoord.y + DIR[d+1]);
-                    if (CheckInBounds(newCoord2) && CheckSquareOccupied(newCoord2) == -1)
+                    if (CheckInBounds(newCoord2) && !CheckSquareOccupied(newCoord2))
                     {
                         legalSquares.Add(newCoord2);
                     }
@@ -195,6 +189,11 @@ public partial class Board
         GetLegalMoves(turn);
 
         players[turn].TurnToMove();
+    }
+
+    public void UnmakeMove(int move)
+    {
+
     }
 
     public void PlaceWall(Wall wall)
