@@ -9,10 +9,7 @@ public class Human : Player
 
     public override void TurnToMove() {}
 
-    public override void Update()
-    {
-        
-    }
+    public override void Update() {}
 
     public override string ToString()
     {
