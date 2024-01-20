@@ -2,7 +2,6 @@ using System;
 using Raylib_cs;
 using static Quoridor.Settings.Board;
 using static Quoridor.Move;
-using System.ComponentModel.DataAnnotations;
 
 namespace Quoridor;
 
@@ -32,7 +31,7 @@ public partial class Board
 
     public static readonly int[] dirMask = new int[] {0b1000, 0b0100, 0b0010, 0b0001};
 
-    public event System.Action<int> playMove;
+    public event System.Action<int> PlayMove;
 
     public Board()
     {
@@ -205,6 +204,12 @@ public partial class Board
     // Undo the most recent move
     public void UndoMove()
     {
+        // If there is no move to pop, then do nothing
+        if (gameMoves.Count == 0)
+        {
+            return;
+        }
+
         turn = (turn + 3) % NumOfPlayers;
 
         int move = gameMoves.Pop();
@@ -301,7 +306,7 @@ public partial class Board
             placedWallsVer[i, j] = false;
             validWallsVer[i, j] = true;
 
-            if (!placedWallsVer[Math.Min(i+1, BoardSize-2), j] && !placedWallsVer[Math.Max(i-1, 0), j])
+            if (!placedWallsHor[Math.Min(i+1, BoardSize-2), j] && !placedWallsHor[Math.Max(i-1, 0), j])
             {
                 validWallsHor[i, j] = true;
             }
@@ -331,14 +336,14 @@ public partial class Board
     public Human CreateHuman(int ID, Coord startPos, Color colour, Coord goal)
     {
         Human human = new Human(this, ID, startPos, colour, goal);
-        human.PlayChosenMove += playMove;
+        human.PlayChosenMove += PlayMove;
         return human;
     }
 
     public Bot CreateBot(PlayerType botType, int ID, Coord startPos, Color colour, Coord goal)
     {
         Bot bot = Bot.CreateBot(botType, this, ID, startPos, colour, goal);
-        bot.PlayChosenMove += playMove;
+        bot.PlayChosenMove += PlayMove;
         return bot;
     }
 
