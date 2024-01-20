@@ -12,11 +12,14 @@ public partial class Board
     private static readonly int[] DIR = new int[] {0, 1, 0, -1, 0};
 
     public List<Player> players;
-    public List<Wall> walls;
+    public Stack<Wall> walls;
 
     public bool[,] validWallsHor;
     public bool[,] validWallsVer;
     public int[,] validMoves; // Each square will be 0b____ : up, right, down, left
+
+    public bool[,] placedWallsHor;
+    public bool[,] placedWallsVer;
 
     public int turn;
     public bool gameOver;
@@ -24,21 +27,26 @@ public partial class Board
     public List<int> legalMoves;
     public List<Coord> legalSquares;
 
+    public Stack<int> gameMoves;
+
     public static readonly int[] dirMask = new int[] {0b1000, 0b0100, 0b0010, 0b0001};
 
-    public event System.Action<int> playMove;
+    public event System.Action<int> PlayMove;
 
     public Board()
     {
         players = new List<Player>();
-        walls = new List<Wall>();
+        walls = new Stack<Wall>();
         validWallsHor = new bool[BoardSize - 1, BoardSize - 1];
         validWallsVer = new bool[BoardSize - 1, BoardSize - 1];
+        placedWallsHor = new bool[BoardSize - 1, BoardSize - 1];
+        placedWallsVer = new bool[BoardSize - 1, BoardSize - 1];
         validMoves = new int[BoardSize, BoardSize];
         turn = 0;
         gameOver = false;
         legalMoves = new List<int>();
         legalSquares = new List<Coord>();
+        gameMoves = new Stack<int>();
         InitialiseUI();
         NewGame();
     }
@@ -71,6 +79,8 @@ public partial class Board
             {
                 validWallsHor[i, j] = true;
                 validWallsVer[i, j] = true;
+                placedWallsHor[i, j] = false;
+                placedWallsVer[i, j] = false;
             }
         }
 
@@ -85,6 +95,7 @@ public partial class Board
         turn = 0;
         gameOver = false;
         GetLegalMoves(turn);
+        gameMoves.Clear();
         players[turn].TurnToMove();
     }
 
@@ -187,18 +198,38 @@ public partial class Board
 
         turn = (turn + 1) % NumOfPlayers;
         GetLegalMoves(turn);
-
-        players[turn].TurnToMove();
+        gameMoves.Push(move);
     }
 
-    public void UnmakeMove(int move)
+    // Undo the most recent move
+    public void UndoMove()
     {
+        // If there is no move to pop, then do nothing
+        if (gameMoves.Count == 0)
+        {
+            return;
+        }
 
+        turn = (turn + 3) % NumOfPlayers;
+
+        int move = gameMoves.Pop();
+        if (IsWall(move))
+        {
+            // We assume the wall associated with the move is the same as the most recent wall pushed onto the list
+            PopWall();
+            players[turn].wallsLeft++;
+        }
+        else
+        {
+            players[turn].position = RetrieveStartCoord(move);
+        }
+
+        GetLegalMoves(turn);
     }
 
     public void PlaceWall(Wall wall)
     {
-        walls.Add(wall);
+        walls.Push(wall);
         int i = wall.x;
         int j = wall.y;
 
@@ -216,6 +247,8 @@ public partial class Board
             // Cannot move down
             validMoves[i  , j+1] &= ~dirMask[2];
             validMoves[i+1, j+1] &= ~dirMask[2];
+
+            placedWallsHor[i, j] = true;
         }
         else
         {
@@ -228,6 +261,70 @@ public partial class Board
             // Cannot move left
             validMoves[i+1, j  ] &= ~dirMask[3];
             validMoves[i+1, j+1] &= ~dirMask[3];
+
+            placedWallsVer[i, j] = true;
+        }
+    }
+
+    public void PopWall()
+    {
+        // We assume this is the MOST RECENT wall placed as it's only called from UndoMove, which unmakes the most recent move
+        // We also need to be careful since placing a wall can set a false -> false, so setting it to true without checking is incorrect
+        // Simplest solution is keeping track of each game state in a stack and recovering, but that is inefficient
+
+        Wall wall = walls.Pop();
+        int i = wall.x;
+        int j = wall.y;
+
+        if (wall.isHorizontal)
+        {
+            placedWallsHor[i, j] = false;
+            validWallsHor[i, j] = true;
+
+            if (!placedWallsVer[i, Math.Min(j+1, BoardSize-2)] && !placedWallsVer[i, Math.Max(j-1, 0)])
+            {
+                validWallsVer[i, j] = true;
+            }
+            if (!placedWallsVer[Math.Min(i+1, BoardSize-2), j] && !placedWallsHor[Math.Min(i+2, BoardSize-2), j])
+            {
+                validWallsHor[Math.Min(i+1, BoardSize-2), j] = true;
+            }
+            if (!placedWallsVer[Math.Max(i-1, 0), j] && !placedWallsHor[Math.Max(i-2, 0), j])
+            {
+                validWallsHor[Math.Max(0, i-1), j] = true;
+            }
+            
+            // Can move up
+            validMoves[i  , j] |= dirMask[0];
+            validMoves[i+1, j] |= dirMask[0];
+            // Can move down
+            validMoves[i  , j+1] |= dirMask[2];
+            validMoves[i+1, j+1] |= dirMask[2];
+        }
+        else
+        {
+            placedWallsVer[i, j] = false;
+            validWallsVer[i, j] = true;
+
+            if (!placedWallsHor[Math.Min(i+1, BoardSize-2), j] && !placedWallsHor[Math.Max(i-1, 0), j])
+            {
+                validWallsHor[i, j] = true;
+            }
+            if (!placedWallsHor[i, Math.Min(j+1, BoardSize-2)] && !placedWallsVer[i, Math.Min(j+2, BoardSize-2)])
+            {
+                validWallsVer[i, Math.Min(j+1, BoardSize-2)] = true;
+            }
+            if (!placedWallsHor[i, Math.Max(j-1, 0)] && !placedWallsVer[i, Math.Max(j-2, 0)])
+            {
+                validWallsVer[i, Math.Max(0, j-1)] = true;
+            }
+
+            // Can move right
+            validMoves[i, j  ] |= dirMask[1];
+            validMoves[i, j+1] |= dirMask[1];
+            // Can move left
+            validMoves[i+1, j  ] |= dirMask[3];
+            validMoves[i+1, j+1] |= dirMask[3];
         }
     }
 
@@ -239,14 +336,14 @@ public partial class Board
     public Human CreateHuman(int ID, Coord startPos, Color colour, Coord goal)
     {
         Human human = new Human(this, ID, startPos, colour, goal);
-        human.PlayChosenMove += playMove;
+        human.PlayChosenMove += PlayMove;
         return human;
     }
 
     public Bot CreateBot(PlayerType botType, int ID, Coord startPos, Color colour, Coord goal)
     {
         Bot bot = Bot.CreateBot(botType, this, ID, startPos, colour, goal);
-        bot.PlayChosenMove += playMove;
+        bot.PlayChosenMove += PlayMove;
         return bot;
     }
 

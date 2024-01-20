@@ -22,9 +22,9 @@ public static class Settings
         public static readonly Quoridor.Board.PlayerType[] PlayerTypes = new Quoridor.Board.PlayerType[]
         {
             Quoridor.Board.PlayerType.Human,
-            Quoridor.Board.PlayerType.RandomBot,
-            Quoridor.Board.PlayerType.RandomBot,
-            Quoridor.Board.PlayerType.MoveBot,
+            Quoridor.Board.PlayerType.Human,
+            Quoridor.Board.PlayerType.Human,
+            Quoridor.Board.PlayerType.Human,
         };
         public const int WallsPerPlayer = 20 / NumOfPlayers;
 

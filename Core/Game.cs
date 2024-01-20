@@ -19,7 +19,7 @@ public class Game
 
         board = new Board();
         board.clickAction += ExecuteAction;
-        board.playMove += OnMove;
+        board.PlayMove += OnMove;
         currentScreen = GameScreen.Main;
         mainScreen = new MainScreen(board);
         mainScreen.clickAction += ExecuteAction;
@@ -55,7 +55,7 @@ public class Game
     public void ExecuteAction(Action action)
     {
         if (action.coord != null)
-        {            
+        {
             Coord coord = (Coord)action.coord;
 
             int move = action.wall == null ? GenerateMove(board.players[board.turn].position, coord) : GenerateMove(action.wall);
@@ -79,21 +79,33 @@ public class Game
 
     private void OnMove(int move)
     {
-        // Unhighlight all the legal moves
         foreach (Coord pos in board.legalSquares)
         {
             board.SetSquareButtonHighlight(pos, false);
         }
-
         board.SetSquareButtonSelected(board.players[board.turn].position, false);
-
         board.MakeMove(move);
-
         foreach (Coord pos in board.legalSquares)
         {
             board.SetSquareButtonHighlight(pos, true);
         }
-
         board.SetSquareButtonSelected(board.players[board.turn].position, true);
+        board.players[board.turn].TurnToMove();
+    }
+
+    private void OnUnmove()
+    {
+        foreach (Coord pos in board.legalSquares)
+        {
+            board.SetSquareButtonHighlight(pos, false);
+        }
+        board.SetSquareButtonSelected(board.players[board.turn].position, false);
+        board.UndoMove();
+        foreach (Coord pos in board.legalSquares)
+        {
+            board.SetSquareButtonHighlight(pos, true);
+        }
+        board.SetSquareButtonSelected(board.players[board.turn].position, true);
+        board.players[board.turn].TurnToMove();
     }
 }
