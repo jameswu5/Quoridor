@@ -2,7 +2,6 @@ using System;
 using Raylib_cs;
 using static Quoridor.Settings.Board;
 using static Quoridor.Move;
-using System.Collections;
 
 namespace Quoridor;
 
@@ -39,6 +38,13 @@ public partial class Board
         legalSquares = new List<Coord>();
         InitialiseUI();
         NewGame();
+    }
+
+    // This is run every frame
+    public void Update()
+    {
+        Display();
+        players[turn].Update();
     }
 
     public void NewGame()
@@ -228,15 +234,12 @@ public partial class Board
 
     public Player CreatePlayer(PlayerType playerType, int ID, Coord startPos, Color colour, Coord goal)
     {
-        switch (playerType)
+        return playerType switch
         {
-            case PlayerType.Human:
-                return CreateHuman(ID, startPos, colour, goal);
-            case PlayerType.Bot:
-                return CreateBot(ID, startPos, colour, goal);
-            default:
-                throw new Exception("Player type not found");
-        }
+            PlayerType.Human => CreateHuman(ID, startPos, colour, goal),
+            PlayerType.Bot => CreateBot(ID, startPos, colour, goal),
+            _ => throw new Exception("Player type not found"),
+        };
     }
 
     public Human CreateHuman(int ID, Coord startPos, Color colour, Coord goal)
@@ -251,12 +254,5 @@ public partial class Board
         Bot bot = new Bot(this, ID, startPos, colour, goal);
         bot.PlayChosenMove += playMove;
         return bot;
-    }
-
-    // This is run every frame
-    public void Update()
-    {
-        Display();
-        players[turn].Update();
     }
 }
