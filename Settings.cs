@@ -48,9 +48,16 @@ public static class Settings
         public const int BoardPaddingX = (ScreenWidth - BoardSideLength) >> 1;
         public const int BoardPaddingY = (ScreenHeight - BoardSideLength) >> 1;
 
-        public const int WLTitleFontSize = 40;
-        public const int WLFontSize = 28;
-        public const int WLTitlePadding = 40;
-        public const int WLTextPadding = 20;
+        // public const int WLTitleFontSize = 40;
+        // public const int WLFontSize = 28;
+        // public const int WLTitlePadding = 40;
+        // public const int WLTextPadding = 20;
+
+        public const int WLCircleRadius = 7;
+        public const int WLCirclePadding = 7;
+        public const int WLPadding = 15;
+        public const int WLUILength = WallsPerPlayer * (WLCircleRadius * 2 + WLCirclePadding) - WLCirclePadding;
+        public static readonly Color WLYesColour = Color.DARKGRAY;
+        public static readonly Color WLNoColour = Color.LIGHTGRAY;
     }
 }

@@ -70,7 +70,7 @@ public partial class Board
         {
             DisplayButtons();
         }
-        DisplayWallsLeftText();
+        DisplayWallsLeft();
         DisplayState();
     }
 
@@ -167,30 +167,6 @@ public partial class Board
         DrawText(gameOverText, textPosX, textPosY, Settings.DefaultFontSize, Color.DARKGRAY);
     }
 
-    private void DisplayWallsLeftText()
-    {
-        string wallsLeftText = "Walls Left";
-        string sampleText = "Player 1:   10";
-
-        (int x, int y) wlPos = GetTextPositions(wallsLeftText, BoardPaddingX, WLTitleFontSize, WLTitleFontSize);
-        (int x, int y) stPos = GetTextPositions(sampleText, BoardPaddingX, WLFontSize, WLFontSize);
-
-
-        DrawText(wallsLeftText, wlPos.x, BoardPaddingY, WLTitleFontSize, Settings.DefaultDarkTextColour);
-        for (int i = 0; i < NumOfPlayers; i++)
-        {
-            DrawText
-            (
-                $"Player {i+1}:   {players[i].wallsLeft}",
-                stPos.x, BoardPaddingY + i * (WLFontSize + WLTextPadding) + WLTitleFontSize + WLTitlePadding,
-                WLFontSize,
-                Settings.DefaultDarkTextColour
-            );
-        }
-
-    }
-
-
     private static (int, int) GetTextPositions(string text, int width, int height, int fontSize) {
         int textWidth = MeasureText(text, fontSize);
         return GetCenteredPositions(textWidth, fontSize, width, height);
@@ -200,5 +176,97 @@ public partial class Board
         int x = (boxWidth - width) >> 1;
         int y = (boxHeight - height) >> 1;
         return (x, y);
+    }
+
+    public void DisplayWallsLeft()
+    {
+        int x = (Settings.ScreenWidth - WLUILength) >> 1;
+
+        /* Player 1 */
+        for (int i = 0; i < WallsPerPlayer - players[0].wallsLeft; i++)
+        {
+            DrawCircle
+            (
+                x + WLCircleRadius + i * (2 * WLCircleRadius + WLCirclePadding),
+                BoardPaddingY + BoardSideLength + WLPadding + BorderWidth + WLCircleRadius,
+                WLCircleRadius, WLNoColour
+            );
+        }
+        for (int i = WallsPerPlayer - players[0].wallsLeft; i < WallsPerPlayer; i++)
+        {
+            DrawCircle
+            (
+                x + WLCircleRadius + i * (2 * WLCircleRadius + WLCirclePadding),
+                BoardPaddingY + BoardSideLength + WLPadding + BorderWidth + WLCircleRadius,
+                WLCircleRadius, WLYesColour
+            );
+        }
+
+        /* Player 2 */
+        for (int i = 0; i < players[1].wallsLeft; i++)
+        {
+            DrawCircle
+            (
+                x + WLCircleRadius + i * (2 * WLCircleRadius + WLCirclePadding),
+                BoardPaddingY - WLPadding - BorderWidth - WLCircleRadius,
+                WLCircleRadius, WLYesColour
+            );
+        }
+        for (int i = players[1].wallsLeft; i < WallsPerPlayer; i++)
+        {
+            DrawCircle
+            (
+                x + WLCircleRadius + i * (2 * WLCircleRadius + WLCirclePadding),
+                BoardPaddingY - WLPadding - BorderWidth - WLCircleRadius,
+                WLCircleRadius, WLNoColour
+            );
+        }
+
+        if (NumOfPlayers == 2)
+        {
+            return;
+        }
+
+        int y = (Settings.ScreenHeight - WLUILength) >> 1;
+
+        /* Player 3 */
+        for (int i = 0; i < WallsPerPlayer - players[2].wallsLeft; i++)
+        {
+            DrawCircle
+            (
+                BoardPaddingX - WLPadding - BorderWidth - WLCircleRadius,
+                y + WLCircleRadius + i * (2 * WLCircleRadius + WLCirclePadding),
+                WLCircleRadius, WLNoColour
+            );
+        }
+        for (int i = WallsPerPlayer - players[2].wallsLeft; i < WallsPerPlayer; i++)
+        {
+            DrawCircle
+            (
+                BoardPaddingX - WLPadding - BorderWidth - WLCircleRadius,
+                y + WLCircleRadius + i * (2 * WLCircleRadius + WLCirclePadding),
+                WLCircleRadius, WLYesColour
+            );
+        }
+
+        /* Player 4 */
+        for (int i = 0; i < players[3].wallsLeft; i++)
+        {
+            DrawCircle
+            (
+                BoardPaddingX + BoardSideLength + WLPadding + BorderWidth + WLCircleRadius,
+                y + WLCircleRadius + i * (2 * WLCircleRadius + WLCirclePadding),
+                WLCircleRadius, WLYesColour
+            );
+        }
+        for (int i = players[3].wallsLeft; i < WallsPerPlayer; i++)
+        {
+            DrawCircle
+            (
+                BoardPaddingX + BoardSideLength + WLPadding + BorderWidth + WLCircleRadius,
+                y + WLCircleRadius + i * (2 * WLCircleRadius + WLCirclePadding),
+                WLCircleRadius, WLNoColour
+            );
+        }
     }
 }
