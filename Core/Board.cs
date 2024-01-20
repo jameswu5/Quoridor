@@ -7,7 +7,7 @@ namespace Quoridor;
 
 public partial class Board
 {
-    public enum PlayerType {Human, Bot};
+    public enum PlayerType {Human, RandomBot};
 
     private static readonly int[] DIR = new int[] {0, 1, 0, -1, 0};
 
@@ -234,12 +234,7 @@ public partial class Board
 
     public Player CreatePlayer(PlayerType playerType, int ID, Coord startPos, Color colour, Coord goal)
     {
-        return playerType switch
-        {
-            PlayerType.Human => CreateHuman(ID, startPos, colour, goal),
-            PlayerType.Bot => CreateBot(ID, startPos, colour, goal),
-            _ => throw new Exception("Player type not found"),
-        };
+        return playerType == PlayerType.Human ? CreateHuman(ID, startPos, colour, goal) : CreateBot(playerType, ID, startPos, colour, goal);
     }
 
     public Human CreateHuman(int ID, Coord startPos, Color colour, Coord goal)
@@ -249,9 +244,9 @@ public partial class Board
         return human;
     }
 
-    public Bot CreateBot(int ID, Coord startPos, Color colour, Coord goal)
+    public Bot CreateBot(PlayerType botType, int ID, Coord startPos, Color colour, Coord goal)
     {
-        Bot bot = new Bot(this, ID, startPos, colour, goal);
+        Bot bot = Bot.CreateBot(botType, this, ID, startPos, colour, goal);
         bot.PlayChosenMove += playMove;
         return bot;
     }
