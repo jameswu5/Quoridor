@@ -12,7 +12,7 @@ public partial class Board
     private static readonly int[] DIR = new int[] {0, 1, 0, -1, 0};
 
     public List<Player> players;
-    public List<Wall> walls;
+    public Stack<Wall> walls;
 
     public bool[,] validWallsHor;
     public bool[,] validWallsVer;
@@ -33,7 +33,7 @@ public partial class Board
     public Board()
     {
         players = new List<Player>();
-        walls = new List<Wall>();
+        walls = new Stack<Wall>();
         validWallsHor = new bool[BoardSize - 1, BoardSize - 1];
         validWallsVer = new bool[BoardSize - 1, BoardSize - 1];
         validMoves = new int[BoardSize, BoardSize];
@@ -191,6 +191,7 @@ public partial class Board
 
         turn = (turn + 1) % NumOfPlayers;
         GetLegalMoves(turn);
+        gameMoves.Push(move);
     }
 
     // Undo the most recent move
@@ -201,7 +202,8 @@ public partial class Board
         int move = gameMoves.Pop();
         if (IsWall(move))
         {
-            RemoveWall(RetrieveWall(move));
+            // We assume the wall associated with the move is the same as the most recent wall pushed onto the list
+            PopWall();
             players[turn].wallsLeft++;
         }
         else
@@ -214,7 +216,7 @@ public partial class Board
 
     public void PlaceWall(Wall wall)
     {
-        walls.Add(wall);
+        walls.Push(wall);
         int i = wall.x;
         int j = wall.y;
 
@@ -247,9 +249,52 @@ public partial class Board
         }
     }
 
-    public void RemoveWall(Wall wall)
+    public void PopWall()
     {
-        throw new NotImplementedException();
+        // We assume this is the MOST RECENT wall placed as it's only called from UndoMove, which unmakes the most recent move
+        Wall wall = walls.Pop();
+        int i = wall.x;
+        int j = wall.y;
+
+        // Obviously this is incorrect as it could've been set from false -> false when the wall is placed
+
+        if (wall.isHorizontal)
+        {
+            validWallsHor[i, j] = true;
+
+            // Incorrect
+            validWallsVer[i, j] = true;
+
+            // Incorrect
+            validWallsHor[Math.Min(i+1, BoardSize-2), j] = true;
+            validWallsHor[Math.Max(0, i-1), j] = true;
+            
+            // Can move up
+            validMoves[i  , j] |= dirMask[0];
+            validMoves[i+1, j] |= dirMask[0];
+            // Can move down
+            validMoves[i  , j+1] |= dirMask[2];
+            validMoves[i+1, j+1] |= dirMask[2];
+        }
+        else
+        {
+            validWallsVer[i, j] = true;
+
+            // Incorrect
+            validWallsHor[i, j] = true;
+
+            // Incorrect
+            validWallsVer[i, Math.Min(j+1, BoardSize-2)] = true;
+            validWallsVer[i, Math.Max(0, j-1)] = true;
+
+            // Can move right
+            validMoves[i, j  ] |= dirMask[1];
+            validMoves[i, j+1] |= dirMask[1];
+            // Can move left
+            validMoves[i+1, j  ] |= dirMask[3];
+            validMoves[i+1, j+1] |= dirMask[3];
+        }
+
     }
 
     public Player CreatePlayer(PlayerType playerType, int ID, Coord startPos, Color colour, Coord goal)
