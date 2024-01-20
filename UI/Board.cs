@@ -158,12 +158,12 @@ public partial class Board
 
     private void DisplayGameOverText()
     {
-        string gameOverText = $"Player {turn + 1} wins!";
+        string gameOverText = $"Player {turn + 1} wins !";
 
-        (int x, int y) = GetTextPositions(gameOverText, Settings.ScreenWidth, BoardPaddingY, Settings.DefaultFontSize);
+        (int x, int y) = GetTextPositions(gameOverText, Settings.ScreenWidth, BoardPaddingY - 2 * (WLPadding + WLCircleRadius), Settings.DefaultFontSize);
 
         int textPosX = x;
-        int textPosY = Settings.ScreenHeight - BoardPaddingY + y;
+        int textPosY = Settings.ScreenHeight - BoardPaddingY + y + 2 * (WLPadding + WLCircleRadius);
         DrawText(gameOverText, textPosX, textPosY, Settings.DefaultFontSize, Color.DARKGRAY);
     }
 
