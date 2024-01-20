@@ -107,6 +107,11 @@ public partial class Board
             button.Render();
         }
 
+        if (players[turn].wallsLeft == 0)
+        {
+            return;
+        }
+        
         for (int i = 0; i < BoardSize - 1; i++)
         {
             for (int j = 0; j < BoardSize - 1; j++)

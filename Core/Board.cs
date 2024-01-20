@@ -180,6 +180,7 @@ public partial class Board
         if (IsWall(move))
         {
             PlaceWall(RetrieveWall(move));
+            players[turn].wallsLeft--;
         }
         else
         {
