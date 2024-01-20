@@ -58,30 +58,11 @@ public class Game
         {            
             Coord coord = (Coord)action.coord;
 
-            if (action.wall == null)
+            int move = action.wall == null ? GenerateMove(board.players[board.turn].position, coord) : GenerateMove(action.wall);
+
+            if (board.legalMoves.Contains(move))
             {
-                if (board.legalSquares.Contains(coord))
-                {
-                    OnMove(GenerateMove(board.players[board.turn].position, coord));
-                }
-            }
-            else
-            {
-                Wall wall = action.wall;
-                if (wall.isHorizontal)
-                {
-                    if (board.validWallsHor[wall.x, wall.y])
-                    {
-                        OnMove(GenerateMove(action.wall));
-                    }
-                }
-                else
-                {
-                    if (board.validWallsVer[wall.x, wall.y])
-                    {
-                        OnMove(GenerateMove(action.wall));
-                    }
-                }
+                OnMove(move);
             }
         }
     }

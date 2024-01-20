@@ -19,8 +19,10 @@ public partial class Board
     public int[,] validMoves; // Each square will be 0b____ : up, right, down, left
 
     public int turn;
-    public List<Coord> legalSquares;
     public bool gameOver;
+
+    public List<int> legalMoves;
+    public List<Coord> legalSquares;
 
     public static readonly int[] dirMask = new int[] {0b1000, 0b0100, 0b0010, 0b0001};
 
@@ -35,6 +37,7 @@ public partial class Board
         validMoves = new int[BoardSize, BoardSize];
         turn = 0;
         gameOver = false;
+        legalMoves = new List<int>();
         legalSquares = new List<Coord>();
         InitialiseUI();
         NewGame();
@@ -81,20 +84,19 @@ public partial class Board
 
         turn = 0;
         gameOver = false;
-        legalSquares = GetLegalSquares(turn);
+        GetLegalMoves(turn);
         players[turn].TurnToMove();
     }
 
     public void GameOver()
     {
-        legalSquares.Clear();
+        legalMoves.Clear();
         gameOver = true;
     }
 
     /// <summary>
     /// Returns the Player number if it's occupied, -1 otherwise
     /// </summary>
-    /// <returns></returns>
     public int CheckSquareOccupied(Coord coord)
     {
         for (int i = 0; i < NumOfPlayers; i++)
@@ -110,10 +112,9 @@ public partial class Board
     /// <summary>
     /// Return the legal squares a player can move to
     /// </summary>
-    /// <returns></returns>
-    public List<Coord> GetLegalSquares(int playerIndex)
+    public void GetLegalSquares(int playerIndex)
     {
-        List<Coord> legalSquares = new();
+        legalSquares.Clear();
         Coord coord = players[playerIndex].position;
 
         for (int d = 0; d < 4; d++)
@@ -168,8 +169,6 @@ public partial class Board
                 }
             }
         }
-
-        return legalSquares;
     }
 
     private static bool CheckInBounds(Coord coord) => coord.x >= 0 && coord.x < BoardSize && coord.y >= 0 && coord.y < BoardSize;
@@ -179,6 +178,7 @@ public partial class Board
         if (IsWall(move))
         {
             PlaceWall(RetrieveWall(move));
+            players[turn].wallsLeft--;
         }
         else
         {
@@ -192,7 +192,7 @@ public partial class Board
         }
 
         turn = (turn + 1) % NumOfPlayers;
-        legalSquares = GetLegalSquares(turn);
+        GetLegalMoves(turn);
 
         players[turn].TurnToMove();
     }
@@ -202,11 +202,13 @@ public partial class Board
         walls.Add(wall);
         int i = wall.x;
         int j = wall.y;
+
+        validWallsVer[i, j] = false;
+        validWallsHor[i, j] = false;
+
         if (wall.isHorizontal)
         {
-            validWallsVer[i, j] = false;
-            validWallsHor[i, j] = false;
-            validWallsHor[Math.Min(i + 1, BoardSize - 2), j] = false;
+            validWallsHor[Math.Min(i+1, BoardSize-2), j] = false;
             validWallsHor[Math.Max(0, i-1), j] = false;
 
             // Cannot move up
@@ -218,10 +220,8 @@ public partial class Board
         }
         else
         {
-            validWallsHor[i, j] = false;
-            validWallsVer[i, j] = false;
-            validWallsVer[i, Math.Min(j + 1, BoardSize - 2)] = false;
-            validWallsVer[i, Math.Max(0, j - 1)] = false;
+            validWallsVer[i, Math.Min(j+1, BoardSize-2)] = false;
+            validWallsVer[i, Math.Max(0, j-1)] = false;
 
             // Cannot move right
             validMoves[i, j  ] &= ~dirMask[1];
@@ -254,5 +254,36 @@ public partial class Board
         Bot bot = new Bot(this, ID, startPos, colour, goal);
         bot.PlayChosenMove += playMove;
         return bot;
+    }
+
+    public void GetLegalMoves(int playerIndex)
+    {
+        legalMoves.Clear();
+        GetLegalSquares(playerIndex);
+
+        foreach (Coord coord in legalSquares)
+        {
+            legalMoves.Add(GenerateMove(players[playerIndex].position, coord));
+        }
+        
+        if (players[playerIndex].wallsLeft == 0)
+        {
+            return;
+        }
+
+        for (int i = 0; i < BoardSize - 1; i++)
+        {
+            for (int j = 0; j < BoardSize - 1; j++)
+            {
+                if (validWallsHor[i, j])
+                {
+                    legalMoves.Add(GenerateMove(new Wall(i, j, true)));
+                }
+                if (validWallsVer[i, j])
+                {
+                    legalMoves.Add(GenerateMove(new Wall(i, j, false)));
+                }
+            }
+        }
     }
 }

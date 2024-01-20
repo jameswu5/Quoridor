@@ -70,6 +70,7 @@ public partial class Board
         {
             DisplayButtons();
         }
+        DisplayWallsLeftText();
         DisplayState();
     }
 
@@ -106,6 +107,11 @@ public partial class Board
             button.Render();
         }
 
+        if (players[turn].wallsLeft == 0)
+        {
+            return;
+        }
+        
         for (int i = 0; i < BoardSize - 1; i++)
         {
             for (int j = 0; j < BoardSize - 1; j++)
@@ -153,9 +159,46 @@ public partial class Board
     private void DisplayGameOverText()
     {
         string gameOverText = $"Player {turn + 1} wins!";
-        int textLength = MeasureText(gameOverText, Settings.DefaultFontSize);
-        int textPosX = (Settings.ScreenWidth - textLength) / 2;
-        int textPosY = Settings.ScreenHeight - BoardPaddingY + (BoardPaddingY - Settings.DefaultFontSize) / 2;
+
+        (int x, int y) = GetTextPositions(gameOverText, Settings.ScreenWidth, BoardPaddingY, Settings.DefaultFontSize);
+
+        int textPosX = x;
+        int textPosY = Settings.ScreenHeight - BoardPaddingY + y;
         DrawText(gameOverText, textPosX, textPosY, Settings.DefaultFontSize, Color.DARKGRAY);
+    }
+
+    private void DisplayWallsLeftText()
+    {
+        string wallsLeftText = "Walls Left";
+        string sampleText = "Player 1:   10";
+
+        (int x, int y) wlPos = GetTextPositions(wallsLeftText, BoardPaddingX, WLTitleFontSize, WLTitleFontSize);
+        (int x, int y) stPos = GetTextPositions(sampleText, BoardPaddingX, WLFontSize, WLFontSize);
+
+
+        DrawText(wallsLeftText, wlPos.x, BoardPaddingY, WLTitleFontSize, Settings.DefaultDarkTextColour);
+        for (int i = 0; i < NumOfPlayers; i++)
+        {
+            DrawText
+            (
+                $"Player {i+1}:   {players[i].wallsLeft}",
+                stPos.x, BoardPaddingY + i * (WLFontSize + WLTextPadding) + WLTitleFontSize + WLTitlePadding,
+                WLFontSize,
+                Settings.DefaultDarkTextColour
+            );
+        }
+
+    }
+
+
+    private static (int, int) GetTextPositions(string text, int width, int height, int fontSize) {
+        int textWidth = MeasureText(text, fontSize);
+        return GetCenteredPositions(textWidth, fontSize, width, height);
+    }
+
+    private static (int, int) GetCenteredPositions(int width, int height, int boxWidth, int boxHeight) {
+        int x = (boxWidth - width) >> 1;
+        int y = (boxHeight - height) >> 1;
+        return (x, y);
     }
 }

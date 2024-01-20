@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 using Raylib_cs;
 
 namespace Quoridor;
@@ -22,10 +23,11 @@ public static class Settings
         public static readonly Quoridor.Board.PlayerType[] PlayerTypes = new Quoridor.Board.PlayerType[]
         {
             Quoridor.Board.PlayerType.Human,
-            Quoridor.Board.PlayerType.Bot,
-            Quoridor.Board.PlayerType.Bot,
-            Quoridor.Board.PlayerType.Bot
+            Quoridor.Board.PlayerType.Human,
+            Quoridor.Board.PlayerType.Human,
+            Quoridor.Board.PlayerType.Human
         };
+        public const int WallsPerPlayer = 20 / NumOfPlayers;
 
         public static readonly Color BorderColour = Color.DARKGRAY;
         public static readonly Color BoardColour = ScreenColour;
@@ -45,5 +47,10 @@ public static class Settings
         public const int BoardSideLength = BoardSize * (SquareSize + WallWidth) - WallWidth;
         public const int BoardPaddingX = (ScreenWidth - BoardSideLength) >> 1;
         public const int BoardPaddingY = (ScreenHeight - BoardSideLength) >> 1;
+
+        public const int WLTitleFontSize = 40;
+        public const int WLFontSize = 28;
+        public const int WLTitlePadding = 40;
+        public const int WLTextPadding = 20;
     }
 }

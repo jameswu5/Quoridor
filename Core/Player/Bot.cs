@@ -6,6 +6,7 @@ namespace Quoridor;
 
 public class Bot : Player
 {
+    private Random rng = new();
     private bool moveFound = false;
     private int chosenMove = 0;
 
@@ -31,8 +32,9 @@ public class Bot : Player
     {
         // Implement the move selection algorithm here.
 
-        // Simple example: choose the first move available
-        chosenMove = Move.GenerateMove(board.players[ID].position, board.legalSquares[0]);
+        // Simple example: pick randomly
+        int num = rng.Next(board.legalMoves.Count);
+        chosenMove = board.legalMoves[num];
         moveFound = true;
     }
 
