@@ -44,6 +44,9 @@ public static class Test
         }
     }
 
+    /// <summary>
+    /// No Perft data avaiable, so I make some random moves and unmake them, and all the perft results in each iteration should be the same.
+    /// </summary>
     public static void TestMoveGeneration(int iterations, int numOfMoves, int depth)
     {
         for (int i = 0; i < iterations; i++)
