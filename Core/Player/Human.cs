@@ -11,7 +11,7 @@ public class Human : Player
 
     public override void Update()
     {
-        throw new NotImplementedException();
+        
     }
 
     public override string ToString()

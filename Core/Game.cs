@@ -19,6 +19,7 @@ public class Game
 
         board = new Board();
         board.clickAction += ExecuteAction;
+        board.playMove += OnMove;
         currentScreen = GameScreen.Main;
         mainScreen = new MainScreen(board);
         mainScreen.clickAction += ExecuteAction;

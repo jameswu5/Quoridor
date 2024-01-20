@@ -22,6 +22,8 @@ public partial class Board
 
     public static readonly int[] dirMask = new int[] {0b1000, 0b0100, 0b0010, 0b0001};
 
+    public event System.Action<int> playMove;
+
     public Board()
     {
         players = new List<Player>();
@@ -44,7 +46,7 @@ public partial class Board
         int index = BoardSize >> 1;
 
         players.Add(CreateHuman(0, new Coord(index, 0), PlayerColours[0], new Coord(-1, BoardSize - 1)));
-        players.Add(CreateHuman(1, new Coord(index, BoardSize - 1), PlayerColours[1], new Coord(-1, 0)));
+        players.Add(CreateBot(1, new Coord(index, BoardSize - 1), PlayerColours[1], new Coord(-1, 0)));
         if (NumOfPlayers == 4)
         {
             players.Add(CreateHuman(2, new Coord(0, index), PlayerColours[2], new Coord(BoardSize - 1, -1)));
@@ -181,6 +183,8 @@ public partial class Board
 
         turn = (turn + 1) % NumOfPlayers;
         legalSquares = GetLegalSquares(turn);
+
+        players[turn].TurnToMove();
     }
 
     public void PlaceWall(Wall wall)
@@ -223,14 +227,21 @@ public partial class Board
     public Human CreateHuman(int ID, Coord startPos, Color colour, Coord goal)
     {
         Human human = new Human(this, ID, startPos, colour, goal);
-        human.PlayChosenMove += MakeMove;
+        human.PlayChosenMove += playMove;
         return human;
     }
 
     public Bot CreateBot(int ID, Coord startPos, Color colour, Coord goal)
     {
         Bot bot = new Bot(this, ID, startPos, colour, goal);
-        bot.PlayChosenMove += MakeMove;
+        bot.PlayChosenMove += playMove;
         return bot;
+    }
+
+    // This is run every frame
+    public void Update()
+    {
+        Display();
+        players[turn].Update();
     }
 }

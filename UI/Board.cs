@@ -66,7 +66,7 @@ public partial class Board
         {
             DisplayGameOverText();
         }
-        else
+        else if (players[turn].ToString() == "Human") // This is ugly code and I will change it
         {
             DisplayButtons();
         }

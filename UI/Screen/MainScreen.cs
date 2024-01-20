@@ -15,6 +15,7 @@ public class MainScreen : Screen
 
     public override void Display()
     {
-        board.Display();
+        // board.Display();
+        board.Update();
     }
 }
