@@ -16,6 +16,7 @@ public abstract class Bot : Player
         return botType switch
         {
             Board.PlayerType.RandomBot => new RandomBot(board, ID, startPos, colour, goal),
+            Board.PlayerType.MoveBot => new MoveBot(board, ID, startPos, colour, goal),
             _ => throw new Exception("Bot not found"),
         };
     }

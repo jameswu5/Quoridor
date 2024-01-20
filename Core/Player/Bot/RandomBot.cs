@@ -3,6 +3,9 @@ using Raylib_cs;
 
 namespace Quoridor;
 
+/// <summary>
+/// Bot that only plays random moves
+/// </summary>
 public class RandomBot : Bot
 {
     private readonly Random rng;
