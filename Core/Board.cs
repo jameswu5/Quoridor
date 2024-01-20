@@ -25,7 +25,7 @@ public partial class Board
     public bool gameOver;
 
     public List<int> legalMoves;
-    public List<Coord> legalSquares;
+    private Stack<List<int>> moveCache;
 
     public Stack<int> gameMoves;
 
@@ -45,7 +45,7 @@ public partial class Board
         turn = 0;
         gameOver = false;
         legalMoves = new List<int>();
-        legalSquares = new List<Coord>();
+        moveCache = new Stack<List<int>>();
         gameMoves = new Stack<int>();
         InitialiseUI();
         NewGame();
@@ -95,6 +95,8 @@ public partial class Board
         turn = 0;
         gameOver = false;
         GetLegalMoves(turn);
+        moveCache.Clear();
+        moveCache.Push(new List<int>(legalMoves));
         gameMoves.Clear();
         players[turn].TurnToMove();
     }
@@ -117,9 +119,9 @@ public partial class Board
         return false;
     }
 
-    public void GetLegalSquares(int playerIndex)
+    public List<Coord> GetLegalSquares(int playerIndex)
     {
-        legalSquares.Clear();
+        List<Coord> legalSquares = new();
         Coord coord = players[playerIndex].position;
 
         for (int d = 0; d < 4; d++)
@@ -174,6 +176,7 @@ public partial class Board
                 }
             }
         }
+        return legalSquares;
     }
 
     private static bool CheckInBounds(Coord coord) => coord.x >= 0 && coord.x < BoardSize && coord.y >= 0 && coord.y < BoardSize;
@@ -198,6 +201,7 @@ public partial class Board
 
         turn = (turn + 1) % NumOfPlayers;
         GetLegalMoves(turn);
+        moveCache.Push(new List<int>(legalMoves));
         gameMoves.Push(move);
     }
 
@@ -224,7 +228,8 @@ public partial class Board
             players[turn].position = RetrieveStartCoord(move);
         }
 
-        GetLegalMoves(turn);
+        moveCache.Pop();
+        legalMoves = moveCache.Peek();
     }
 
     public void PlaceWall(Wall wall)
@@ -350,7 +355,7 @@ public partial class Board
     public void GetLegalMoves(int playerIndex)
     {
         legalMoves.Clear();
-        GetLegalSquares(playerIndex);
+        List<Coord> legalSquares = GetLegalSquares(playerIndex);
 
         foreach (Coord coord in legalSquares)
         {
@@ -376,5 +381,18 @@ public partial class Board
                 }
             }
         }
+    }
+
+    public List<Coord> GetLegalSquareMoves()
+    {
+        List<Coord> res = new();
+        foreach (int move in legalMoves)
+        {
+            if (!IsWall(move))
+            {
+                res.Add(RetrieveTargetCoord(move));
+            }
+        }
+        return res;
     }
 }

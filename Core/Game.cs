@@ -50,6 +50,11 @@ public class Game
             default:
                 throw new Exception("No screen found.");
         }
+
+        if (Raylib.IsMouseButtonPressed(MouseButton.MOUSE_RIGHT_BUTTON))
+        {
+            OnUnmove();
+        }
     }
 
     public void ExecuteAction(Action action)
@@ -70,7 +75,7 @@ public class Game
     public void NewGame()
     {
         board.NewGame();
-        foreach (Coord coord in board.legalSquares)
+        foreach (Coord coord in board.GetLegalSquareMoves())
         {
             board.SetSquareButtonHighlight(coord, true);
         }
@@ -79,13 +84,13 @@ public class Game
 
     private void OnMove(int move)
     {
-        foreach (Coord pos in board.legalSquares)
+        foreach (Coord pos in board.GetLegalSquareMoves())
         {
             board.SetSquareButtonHighlight(pos, false);
         }
         board.SetSquareButtonSelected(board.players[board.turn].position, false);
         board.MakeMove(move);
-        foreach (Coord pos in board.legalSquares)
+        foreach (Coord pos in board.GetLegalSquareMoves())
         {
             board.SetSquareButtonHighlight(pos, true);
         }
@@ -95,13 +100,13 @@ public class Game
 
     private void OnUnmove()
     {
-        foreach (Coord pos in board.legalSquares)
+        foreach (Coord pos in board.GetLegalSquareMoves())
         {
             board.SetSquareButtonHighlight(pos, false);
         }
         board.SetSquareButtonSelected(board.players[board.turn].position, false);
         board.UndoMove();
-        foreach (Coord pos in board.legalSquares)
+        foreach (Coord pos in board.GetLegalSquareMoves())
         {
             board.SetSquareButtonHighlight(pos, true);
         }

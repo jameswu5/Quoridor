@@ -9,5 +9,7 @@ public static class Program
     {
         Game game = new Game();
         game.Run();
+
+        // Test.TestMoveGeneration(10, 10, 4);
     }
 }

@@ -17,8 +17,9 @@ public class MoveBot : Bot
 
     public override void ChooseMove()
     {
-        int num = rng.Next(board.legalSquares.Count);
-        chosenMove = Move.GenerateMove(board.players[board.turn].position, board.legalSquares[num]);
+        List<Coord> available = board.GetLegalSquareMoves();
+        int num = rng.Next(available.Count);
+        chosenMove = Move.GenerateMove(board.players[board.turn].position, available[num]);
         moveFound = true;
     }
 }
