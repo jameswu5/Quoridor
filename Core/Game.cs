@@ -95,5 +95,7 @@ public class Game
         }
 
         board.SetSquareButtonSelected(board.players[board.turn].position, true);
+        
+        board.players[board.turn].TurnToMove();
     }
 }

@@ -22,7 +22,7 @@ public static class Settings
         public static readonly Quoridor.Board.PlayerType[] PlayerTypes = new Quoridor.Board.PlayerType[]
         {
             Quoridor.Board.PlayerType.Human,
-            Quoridor.Board.PlayerType.RandomBot,
+            Quoridor.Board.PlayerType.Human,
             Quoridor.Board.PlayerType.RandomBot,
             Quoridor.Board.PlayerType.MoveBot,
         };

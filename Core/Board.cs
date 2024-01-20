@@ -24,6 +24,8 @@ public partial class Board
     public List<int> legalMoves;
     public List<Coord> legalSquares;
 
+    public Stack<int> gameMoves;
+
     public static readonly int[] dirMask = new int[] {0b1000, 0b0100, 0b0010, 0b0001};
 
     public event System.Action<int> playMove;
@@ -39,6 +41,7 @@ public partial class Board
         gameOver = false;
         legalMoves = new List<int>();
         legalSquares = new List<Coord>();
+        gameMoves = new Stack<int>();
         InitialiseUI();
         NewGame();
     }
@@ -85,6 +88,7 @@ public partial class Board
         turn = 0;
         gameOver = false;
         GetLegalMoves(turn);
+        gameMoves.Clear();
         players[turn].TurnToMove();
     }
 
@@ -187,13 +191,25 @@ public partial class Board
 
         turn = (turn + 1) % NumOfPlayers;
         GetLegalMoves(turn);
-
-        players[turn].TurnToMove();
     }
 
-    public void UnmakeMove(int move)
+    // Undo the most recent move
+    public void UndoMove()
     {
+        turn = (turn + 3) % NumOfPlayers;
 
+        int move = gameMoves.Pop();
+        if (IsWall(move))
+        {
+            RemoveWall(RetrieveWall(move));
+            players[turn].wallsLeft++;
+        }
+        else
+        {
+            players[turn].position = RetrieveStartCoord(move);
+        }
+
+        GetLegalMoves(turn);
     }
 
     public void PlaceWall(Wall wall)
@@ -229,6 +245,11 @@ public partial class Board
             validMoves[i+1, j  ] &= ~dirMask[3];
             validMoves[i+1, j+1] &= ~dirMask[3];
         }
+    }
+
+    public void RemoveWall(Wall wall)
+    {
+        throw new NotImplementedException();
     }
 
     public Player CreatePlayer(PlayerType playerType, int ID, Coord startPos, Color colour, Coord goal)
