@@ -2,6 +2,7 @@ using System;
 using Raylib_cs;
 using static Quoridor.Settings.Board;
 using static Quoridor.Move;
+using System.ComponentModel.DataAnnotations;
 
 namespace Quoridor;
 
@@ -17,6 +18,9 @@ public partial class Board
     public bool[,] validWallsHor;
     public bool[,] validWallsVer;
     public int[,] validMoves; // Each square will be 0b____ : up, right, down, left
+
+    public bool[,] placedWallsHor;
+    public bool[,] placedWallsVer;
 
     public int turn;
     public bool gameOver;
@@ -36,6 +40,8 @@ public partial class Board
         walls = new Stack<Wall>();
         validWallsHor = new bool[BoardSize - 1, BoardSize - 1];
         validWallsVer = new bool[BoardSize - 1, BoardSize - 1];
+        placedWallsHor = new bool[BoardSize - 1, BoardSize - 1];
+        placedWallsVer = new bool[BoardSize - 1, BoardSize - 1];
         validMoves = new int[BoardSize, BoardSize];
         turn = 0;
         gameOver = false;
@@ -74,6 +80,8 @@ public partial class Board
             {
                 validWallsHor[i, j] = true;
                 validWallsVer[i, j] = true;
+                placedWallsHor[i, j] = false;
+                placedWallsVer[i, j] = false;
             }
         }
 
@@ -234,6 +242,8 @@ public partial class Board
             // Cannot move down
             validMoves[i  , j+1] &= ~dirMask[2];
             validMoves[i+1, j+1] &= ~dirMask[2];
+
+            placedWallsHor[i, j] = true;
         }
         else
         {
@@ -246,28 +256,38 @@ public partial class Board
             // Cannot move left
             validMoves[i+1, j  ] &= ~dirMask[3];
             validMoves[i+1, j+1] &= ~dirMask[3];
+
+            placedWallsVer[i, j] = true;
         }
     }
 
     public void PopWall()
     {
         // We assume this is the MOST RECENT wall placed as it's only called from UndoMove, which unmakes the most recent move
+        // We also need to be careful since placing a wall can set a false -> false, so setting it to true without checking is incorrect
+        // Simplest solution is keeping track of each game state in a stack and recovering, but that is inefficient
+
         Wall wall = walls.Pop();
         int i = wall.x;
         int j = wall.y;
 
-        // Obviously this is incorrect as it could've been set from false -> false when the wall is placed
-
         if (wall.isHorizontal)
         {
+            placedWallsHor[i, j] = false;
             validWallsHor[i, j] = true;
 
-            // Incorrect
-            validWallsVer[i, j] = true;
-
-            // Incorrect
-            validWallsHor[Math.Min(i+1, BoardSize-2), j] = true;
-            validWallsHor[Math.Max(0, i-1), j] = true;
+            if (!placedWallsVer[i, Math.Min(j+1, BoardSize-2)] && !placedWallsVer[i, Math.Max(j-1, 0)])
+            {
+                validWallsVer[i, j] = true;
+            }
+            if (!placedWallsVer[Math.Min(i+1, BoardSize-2), j] && !placedWallsHor[Math.Min(i+2, BoardSize-2), j])
+            {
+                validWallsHor[Math.Min(i+1, BoardSize-2), j] = true;
+            }
+            if (!placedWallsVer[Math.Max(i-1, 0), j] && !placedWallsHor[Math.Max(i-2, 0), j])
+            {
+                validWallsHor[Math.Max(0, i-1), j] = true;
+            }
             
             // Can move up
             validMoves[i  , j] |= dirMask[0];
@@ -278,14 +298,21 @@ public partial class Board
         }
         else
         {
+            placedWallsVer[i, j] = false;
             validWallsVer[i, j] = true;
 
-            // Incorrect
-            validWallsHor[i, j] = true;
-
-            // Incorrect
-            validWallsVer[i, Math.Min(j+1, BoardSize-2)] = true;
-            validWallsVer[i, Math.Max(0, j-1)] = true;
+            if (!placedWallsVer[Math.Min(i+1, BoardSize-2), j] && !placedWallsVer[Math.Max(i-1, 0), j])
+            {
+                validWallsHor[i, j] = true;
+            }
+            if (!placedWallsHor[i, Math.Min(j+1, BoardSize-2)] && !placedWallsVer[i, Math.Min(j+2, BoardSize-2)])
+            {
+                validWallsVer[i, Math.Min(j+1, BoardSize-2)] = true;
+            }
+            if (!placedWallsHor[i, Math.Max(j-1, 0)] && !placedWallsVer[i, Math.Max(j-2, 0)])
+            {
+                validWallsVer[i, Math.Max(0, j-1)] = true;
+            }
 
             // Can move right
             validMoves[i, j  ] |= dirMask[1];
@@ -294,7 +321,6 @@ public partial class Board
             validMoves[i+1, j  ] |= dirMask[3];
             validMoves[i+1, j+1] |= dirMask[3];
         }
-
     }
 
     public Player CreatePlayer(PlayerType playerType, int ID, Coord startPos, Color colour, Coord goal)
