@@ -32,6 +32,11 @@ public abstract class Player
         return position.x == goal.x || position.y == goal.y;
     }
 
+    public int DistanceFromGoal()
+    {
+        return goal.x == -1 ? Math.Abs(position.y - goal.y) : Math.Abs(position.x - goal.x);
+    }
+
     /* Interface for human and bot */
 
     public event System.Action<int> PlayChosenMove;
