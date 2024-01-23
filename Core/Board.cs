@@ -7,7 +7,7 @@ namespace Quoridor;
 
 public partial class Board
 {
-    public enum PlayerType {Human, RandomBot, MoveBot};
+    public enum PlayerType {Human, RandomBot, MoveBot, PositionBot};
 
     private static readonly int[] DIR = new int[] {0, 1, 0, -1, 0};
 

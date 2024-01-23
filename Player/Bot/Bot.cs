@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using Raylib_cs;
+using static Quoridor.Board;
 
 namespace Quoridor;
 
@@ -11,12 +12,13 @@ public abstract class Bot : Player
 
     public Bot(Board board, int ID, Coord position, Color colour, Coord goal) : base(board, ID, position, colour, goal) {}
 
-    public static Bot CreateBot(Board.PlayerType botType, Board board, int ID, Coord startPos, Color colour, Coord goal)
+    public static Bot CreateBot(PlayerType botType, Board board, int ID, Coord startPos, Color colour, Coord goal)
     {
         return botType switch
         {
-            Board.PlayerType.RandomBot => new RandomBot(board, ID, startPos, colour, goal),
-            Board.PlayerType.MoveBot => new MoveBot(board, ID, startPos, colour, goal),
+            PlayerType.RandomBot => new RandomBot(board, ID, startPos, colour, goal),
+            PlayerType.MoveBot => new MoveBot(board, ID, startPos, colour, goal),
+            PlayerType.PositionBot => new PositionBot(board, ID, startPos, colour, goal),
             _ => throw new Exception("Bot not found"),
         };
     }
