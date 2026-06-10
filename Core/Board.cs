@@ -29,6 +29,12 @@ public partial class Board
 
     public Stack<int> gameMoves;
 
+    // Reusable buffers for wall path-validation, sized once to avoid per-check allocation.
+    // pathVisited stores a search id per square rather than being cleared each search.
+    private int[,] pathVisited;
+    private int pathSearchId;
+    private int[] pathStack;
+
     public static readonly int[] dirMask = new int[] {0b1000, 0b0100, 0b0010, 0b0001};
 
     public event System.Action<int> PlayMove;
@@ -47,6 +53,9 @@ public partial class Board
         legalMoves = new List<int>();
         moveCache = new Stack<List<int>>();
         gameMoves = new Stack<int>();
+        pathVisited = new int[BoardSize, BoardSize];
+        pathStack = new int[BoardSize * BoardSize];
+        pathSearchId = 0;
         InitialiseUI();
         NewGame();
     }
@@ -371,11 +380,11 @@ public partial class Board
         {
             for (int j = 0; j < BoardSize - 1; j++)
             {
-                if (validWallsHor[i, j])
+                if (validWallsHor[i, j] && !WallBlocksAnyPlayer(i, j, true))
                 {
                     res.Add(GenerateMove(new Wall(i, j, true)));
                 }
-                if (validWallsVer[i, j])
+                if (validWallsVer[i, j] && !WallBlocksAnyPlayer(i, j, false))
                 {
                     res.Add(GenerateMove(new Wall(i, j, false)));
                 }
@@ -383,6 +392,118 @@ public partial class Board
         }
 
         return res;
+    }
+
+    /// <summary>
+    /// Returns true if placing the wall at (i, j) would leave at least one player
+    /// with no path to their goal (an illegal placement in Quoridor).
+    /// The wall's four blocked edges are applied to validMoves, every player is
+    /// path-checked, then the edges are restored. validMoves is the natural
+    /// adjacency graph here: it already encodes wall blocking and ignores pawns,
+    /// which is exactly what the path-existence rule requires.
+    /// </summary>
+    private bool WallBlocksAnyPlayer(int i, int j, bool isHorizontal)
+    {
+        // Save and clear the four edges this wall removes. Saving the whole int
+        // (rather than OR-ing back) keeps restore correct regardless of prior state.
+        int a, b, c, d;
+        if (isHorizontal)
+        {
+            a = validMoves[i  , j  ]; validMoves[i  , j  ] &= ~dirMask[0]; // up
+            b = validMoves[i+1, j  ]; validMoves[i+1, j  ] &= ~dirMask[0]; // up
+            c = validMoves[i  , j+1]; validMoves[i  , j+1] &= ~dirMask[2]; // down
+            d = validMoves[i+1, j+1]; validMoves[i+1, j+1] &= ~dirMask[2]; // down
+        }
+        else
+        {
+            a = validMoves[i  , j  ]; validMoves[i  , j  ] &= ~dirMask[1]; // right
+            b = validMoves[i  , j+1]; validMoves[i  , j+1] &= ~dirMask[1]; // right
+            c = validMoves[i+1, j  ]; validMoves[i+1, j  ] &= ~dirMask[3]; // left
+            d = validMoves[i+1, j+1]; validMoves[i+1, j+1] &= ~dirMask[3]; // left
+        }
+
+        bool blocks = false;
+        for (int p = 0; p < NumOfPlayers; p++)
+        {
+            if (!HasPathToGoal(p))
+            {
+                blocks = true;
+                break;
+            }
+        }
+
+        if (isHorizontal)
+        {
+            validMoves[i  , j  ] = a;
+            validMoves[i+1, j  ] = b;
+            validMoves[i  , j+1] = c;
+            validMoves[i+1, j+1] = d;
+        }
+        else
+        {
+            validMoves[i  , j  ] = a;
+            validMoves[i  , j+1] = b;
+            validMoves[i+1, j  ] = c;
+            validMoves[i+1, j+1] = d;
+        }
+
+        return blocks;
+    }
+
+    /// <summary>
+    /// Allocation-free BFS/DFS over the validMoves graph from a player's current
+    /// square to its goal edge. Uses a per-call search id in pathVisited so the
+    /// visited grid never needs clearing.
+    /// </summary>
+    private bool HasPathToGoal(int playerIndex)
+    {
+        Coord start = players[playerIndex].position;
+        Coord goal = players[playerIndex].goal;
+
+        pathSearchId++;
+        int top = 0;
+        pathStack[top++] = start.x * BoardSize + start.y;
+        pathVisited[start.x, start.y] = pathSearchId;
+
+        while (top > 0)
+        {
+            int encoded = pathStack[--top];
+            int x = encoded / BoardSize;
+            int y = encoded % BoardSize;
+
+            // Goal has -1 on one axis (a whole edge); matching the other axis wins.
+            if (x == goal.x || y == goal.y)
+            {
+                return true;
+            }
+
+            int mask = validMoves[x, y];
+            for (int dir = 0; dir < 4; dir++)
+            {
+                if ((mask & dirMask[dir]) == 0)
+                {
+                    continue;
+                }
+
+                int nx = x + DIR[dir];
+                int ny = y + DIR[dir + 1];
+
+                // validMoves does not encode board edges, so bounds-check here.
+                if (nx < 0 || nx >= BoardSize || ny < 0 || ny >= BoardSize)
+                {
+                    continue;
+                }
+                if (pathVisited[nx, ny] == pathSearchId)
+                {
+                    continue;
+                }
+
+                pathVisited[nx, ny] = pathSearchId;
+                pathStack[top++] = nx * BoardSize + ny;
+            }
+        }
+
+        return false;
     }
 
     public List<Coord> GetLegalSquareMoves()
