@@ -2,6 +2,7 @@ using System;
 using Raylib_cs;
 using static Raylib_cs.Raylib;
 using static Quoridor.Settings.Board;
+using static Quoridor.Move;
 
 namespace Quoridor;
 
@@ -116,12 +117,13 @@ public partial class Board
         {
             for (int j = 0; j < BoardSize - 1; j++)
             {
-                // Only render the buttons associated with valid walls
-                if (validWallsHor[BoardSize - i - 2, j])
+                // Only render buttons for walls that are actually legal this turn
+                // (legalMoves already excludes walls that would block a player's path)
+                if (legalMoves.Contains(GenerateMove(i, j, true)))
                 {
-                    hWallButtons[BoardSize - i - 2, j].Render();
+                    hWallButtons[i, j].Render();
                 }
-                if (validWallsVer[i, j])
+                if (legalMoves.Contains(GenerateMove(i, j, false)))
                 {
                     vWallButtons[i, j].Render();
                 }

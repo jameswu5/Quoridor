@@ -35,13 +35,16 @@ public static class Move
     }
 
     // Wall move
-    public static int GenerateMove(Wall wall)
+    public static int GenerateMove(Wall wall) => GenerateMove(wall.x, wall.y, wall.isHorizontal);
+
+    // Wall move (without constructing a Wall)
+    public static int GenerateMove(int x, int y, bool isHorizontal)
     {
         int move = 0;
-        move |= wall.x << TargetXShift;
-        move |= wall.y << TargetYShift;
+        move |= x << TargetXShift;
+        move |= y << TargetYShift;
         move |= 1 << IsWallShift;
-        move |= (wall.isHorizontal ? 1 : 0) << IsHorizontalShift;
+        move |= (isHorizontal ? 1 : 0) << IsHorizontalShift;
         return move;
     }
 
