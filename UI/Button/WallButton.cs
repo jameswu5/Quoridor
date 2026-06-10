@@ -20,14 +20,13 @@ public class WallButton : HoverButton
 
     private static int GetHeight(bool isHorizontal) => isHorizontal ? WallWidth : SquareSize;
 
-    protected override void Display()
-    {
-        DrawRectangle(posX, posY, width, height, colour);
-    }
+    // The board already paints the wall channels every frame, so there is nothing
+    // to draw here. Repainting WallColour over this button's cell would overdraw
+    // (erase) the second square of an adjacent hovered wall's highlight.
+    protected override void Display() {}
 
     protected override void HoverDisplay()
     {
-        Display();
         DrawRectangle(posX, posY, displayWidth, displayHeight, Settings.DefaultHoverTint);
     }
 }
